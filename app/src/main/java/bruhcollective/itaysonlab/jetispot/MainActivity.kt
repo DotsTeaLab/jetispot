@@ -217,6 +217,7 @@ class MainActivity : ComponentActivity() {
                   navController = navController,
                   sessionManager = sessionManager,
                   authManager = authManager,
+                  bsVisible = bsVisible,
                   modifier = Modifier
                     .blur(animateFloatAsState(64 * bsOffset(), spring()).value.dp)
                     .graphicsLayer(

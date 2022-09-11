@@ -22,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -40,6 +41,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun YourLibraryContainerScreen(
+  bsVisible: Boolean,
   viewModel: YourLibraryContainerViewModel = hiltViewModel()
 ) {
   val navController = LocalNavigationController.current
@@ -136,7 +138,14 @@ fun YourLibraryContainerScreen(
         }
       }
     }
-  ) { padding ->
+  ) { scaffoldPadding ->
+    val padding = PaddingValues(
+      top = scaffoldPadding.calculateTopPadding(),
+      start = scaffoldPadding.calculateStartPadding(LayoutDirection.Ltr),
+      end = scaffoldPadding.calculateEndPadding(LayoutDirection.Ltr),
+      bottom = if (bsVisible) 0.dp else scaffoldPadding.calculateBottomPadding()
+    )
+
     if (viewModel.content.isNotEmpty()) {
       if (UseGrid!!) {
         LazyVerticalGrid(

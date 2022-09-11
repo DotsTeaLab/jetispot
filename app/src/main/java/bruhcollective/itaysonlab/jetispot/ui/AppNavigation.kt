@@ -42,7 +42,8 @@ fun AppNavigation(
   navController: NavHostController,
   sessionManager: SpSessionManager,
   authManager: SpAuthManager,
-  modifier: Modifier
+  modifier: Modifier,
+  bsVisible: Boolean
 ) {
   LaunchedEffect(Unit) {
     if (sessionManager.isSignedIn()) return@LaunchedEffect
@@ -104,7 +105,7 @@ fun AppNavigation(
     composable(Screen.QualityConfig.route) { QualityConfigScreen() }
     composable(Screen.NormalizationConfig.route) { NormalizationConfigScreen() }
     composable(Screen.Search.route) { BrowseRootScreen() }
-    composable(Screen.Library.route) { YourLibraryContainerScreen() }
+    composable(Screen.Library.route) { YourLibraryContainerScreen(bsVisible) }
 
     dialog(Dialog.AuthDisclaimer.route) {
       AlertDialog(onDismissRequest = { navController.popBackStack() }, icon = {
