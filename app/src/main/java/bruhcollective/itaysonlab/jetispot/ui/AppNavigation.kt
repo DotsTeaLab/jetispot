@@ -23,12 +23,17 @@ import bruhcollective.itaysonlab.jetispot.R
 import bruhcollective.itaysonlab.jetispot.core.SpAuthManager
 import bruhcollective.itaysonlab.jetispot.core.SpSessionManager
 import bruhcollective.itaysonlab.jetispot.core.api.SpInternalApi
+import bruhcollective.itaysonlab.jetispot.ui.bottomsheets.ArtworkAnimationSheet
+import bruhcollective.itaysonlab.jetispot.ui.bottomsheets.ColorSelectSheet
 import bruhcollective.itaysonlab.jetispot.ui.bottomsheets.jump_to_artist.JumpToArtistBottomSheet
 import bruhcollective.itaysonlab.jetispot.ui.screens.BottomSheet
 import bruhcollective.itaysonlab.jetispot.ui.screens.Dialog
 import bruhcollective.itaysonlab.jetispot.ui.screens.Screen
 import bruhcollective.itaysonlab.jetispot.ui.screens.auth.AuthScreen
-import bruhcollective.itaysonlab.jetispot.ui.screens.config.*
+import bruhcollective.itaysonlab.jetispot.ui.screens.config.ConfigScreen
+import bruhcollective.itaysonlab.jetispot.ui.screens.config.NormalizationConfigScreen
+import bruhcollective.itaysonlab.jetispot.ui.screens.config.QualityConfigScreen
+import bruhcollective.itaysonlab.jetispot.ui.screens.config.StorageScreen
 import bruhcollective.itaysonlab.jetispot.ui.screens.dac.DacRendererScreen
 import bruhcollective.itaysonlab.jetispot.ui.screens.dynamic.DynamicSpIdScreen
 import bruhcollective.itaysonlab.jetispot.ui.screens.hub.BrowseRootScreen
@@ -143,12 +148,12 @@ fun AppNavigation(
       })
     }
 
-    dialog(Dialog.ColorSelect.route){
-      ColorSelectDialog(navController)
+    bottomSheet(BottomSheet.ColorSelect.route){
+      ColorSelectSheet(navController)
     }
 
-    dialog(Dialog.SetArtworkData.route) {
-      ArtworkAnimationDialog(navController)
+    bottomSheet(BottomSheet.SetArtworkData.route) {
+      ArtworkAnimationSheet(navController)
     }
 
     bottomSheet(BottomSheet.JumpToArtist.route) { entry ->

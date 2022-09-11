@@ -47,14 +47,14 @@ enum class Dialog(
   val route: String
 ) {
   AuthDisclaimer("dialogs/disclaimers"),
-  ColorSelect("dialogs/ColorSelect"),
-  Logout("dialogs/logout"),
-  SetArtworkData("dialogs/SetArtworkData")
+  Logout("dialogs/logout")
 }
 
 @Immutable
 enum class BottomSheet(
   val route: String
 ) {
-  JumpToArtist("bs/jumpToArtist/{artistIdsAndRoles}") // ID=ROLE|ID=ROLE
+  JumpToArtist("bs/jumpToArtist/{artistIdsAndRoles}"), // ID=ROLE|ID=ROLE
+  ColorSelect("dialogs/ColorSelect"),
+  SetArtworkData("dialogs/SetArtworkData")
 }
