@@ -25,7 +25,7 @@ object AppPreferences {
         set(value) = Key.NPAnimationDamping.setFloat(value)
 
     var NPAnimationStiffness: Float?
-        get() = Key.NPAnimationStiffness.getFloat(defValue = 0.6f, elseValue = 0.6f)
+        get() = Key.NPAnimationStiffness.getFloat(defValue = 800f, elseValue = 800f)
         set(value) = Key.NPAnimationStiffness.setFloat(value)
 
 

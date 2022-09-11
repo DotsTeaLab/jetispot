@@ -146,53 +146,56 @@ class MainActivity : ComponentActivity() {
         }
 
         CompositionLocalProvider(LocalNavigationController provides lambdaNavController) {
-           ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
-                        Scaffold(
-                            bottomBar = {
-                                val currentDestination = navBackStackEntry?.destination
-                                if (Screen.hideNavigationBar.any { it == currentDestination?.route }) return@Scaffold
-                                NavigationBar(
-                                    modifier = Modifier
-                                        .offset {
-                                            IntOffset(
-                                                0,
-                                                ((80.dp + navBarHeightDp).toPx() * bsOffset()).toInt()
-                                            )
-                                        }
-                                        .background(
-                                            MaterialTheme.colorScheme.compositeSurfaceElevation(
-                                                3.dp
-                                            )
-                                        )
-                                ) {
-                                    Screen.showInBottomNavigation.forEach { (screen, icon) ->
-                                        NavigationBarItem(
-                                            icon = {
-                                                Icon(
-                                                    icon,
-                                                    contentDescription = stringResource(screen.title)
-                                                )
-                                            },
-                                            label = { Text(stringResource(screen.title)) },
-                                            selected = lambdaNavController.controller().backQueue.any {
-                                                it.destination.route?.startsWith(
-                                                    screen.route
-                                                ) == true
-                                            },
-                                            onClick = {
-                                                navController.navigate(screen.route) {
-                                                    popUpTo(Screen.NavGraph.route) {
-                                                        saveState = true
-                                                    }
-
-                                                    launchSingleTop = true
-                                                    restoreState = true
-                                                }
-                                            }
-                                        )
-                                    }
-                                }
-                            }
+          ModalBottomSheetLayout(
+            bottomSheetNavigator = bottomSheetNavigator,
+            sheetShape = RoundedCornerShape(topStart = 28.dp,topEnd = 28.dp),
+            scrimColor = MaterialTheme.colorScheme.scrim.copy(0.5f),
+            sheetBackgroundColor = MaterialTheme.colorScheme.surface
+          ) {
+             Scaffold(
+               bottomBar = {
+                 val currentDestination = navBackStackEntry?.destination
+                 if (Screen.hideNavigationBar.any { it == currentDestination?.route }) return@Scaffold
+                 NavigationBar(
+                   modifier = Modifier
+                     .offset {
+                       IntOffset(
+                         0,
+                         ((80.dp + navBarHeightDp).toPx() * bsOffset()).toInt()
+                       )
+                     }
+                     .background(
+                       MaterialTheme.colorScheme.compositeSurfaceElevation(
+                         3.dp
+                       )
+                     )
+                 ) {
+                   Screen.showInBottomNavigation.forEach { (screen, icon) ->
+                     NavigationBarItem(
+                       icon = {
+                         Icon(
+                           icon,
+                           contentDescription = stringResource(screen.title)
+                         )
+                              },
+                       label = { Text(stringResource(screen.title)) },
+                       selected = lambdaNavController.controller().backQueue.any {
+                         it.destination.route?.startsWith(
+                           screen.route
+                         ) == true },
+                       onClick = {
+                         navController.navigate(screen.route) {
+                           popUpTo(Screen.NavGraph.route) {
+                             saveState = true
+                           }
+                           launchSingleTop = true
+                           restoreState = true
+                         }
+                       }
+                     )
+                   }
+                 }
+               }
             ) { innerPadding ->
               BottomSheetScaffold(
                 sheetContent = {

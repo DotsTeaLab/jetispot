@@ -43,7 +43,7 @@ fun NowPlayingFullscreenComposition (
   val scope = rememberCoroutineScope()
   var artworkPositionCalc by remember { mutableStateOf(Rect(0f, 0f, 0f, 0f)) }
   val damping = NPAnimationDamping!!
-  val stiffness = NPAnimationStiffness!! * 10000
+  val stiffness = NPAnimationStiffness!!
 
   Box(
     modifier = Modifier
