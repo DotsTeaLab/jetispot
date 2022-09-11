@@ -25,6 +25,7 @@
     <string name="config_account">Account</string>
     <string name="config_about">About</string>
     <string name="config_device">Device</string>
+    <string name="config_ui">UI</string>
 
     <string name="config_pbquality">Audio quality</string>
 
@@ -53,6 +54,13 @@
     <string name="config_autoplay">Autoplay suggested tracks</string>
     <string name="config_autoplay_desc">when the queue ends</string>
 
+    <string name="config_color_theme">Select color scheme</string>
+    <string name="theme_reload_message">The app will restart to change the theme</string>
+
+    <string name="config_edit_animation">Edit NowPlaying animation</string>
+    <string name="edit_animation">Edit Now Playing animation</string>
+    <string name="edit_animation_set_default">Set default</string>
+
     <string name="config_logout">Logout</string>
     <string name="config_logout_as">Signed in as %s</string>
 
@@ -77,11 +85,12 @@
     <string name="warn_normalization">Adjust the volume for your environment.\n\nLoud may diminish audio quality. No effect on audio quality in Normal or Quiet.</string>
 
     <string name="enable">Enable</string>
+    <string name="dismiss">Dismiss</string>
 
     <string name="logout_title">Sign out?</string>
     <string name="logout_message">This will remove all data linked to your account from this device. Settings won\'t be reset to default.</string>
     <string name="logout_confirm">Confirm</string>
-    <string name="logout_cancel">Cancel</string>
+    <string name="close">Close</string>
 
     <string name="listening_history">Listening history</string>
 
@@ -136,6 +145,7 @@
     <string name="hide_password">Hide password</string>
     <string name="show_password">Show password</string>
 
+    <string name="artist">Artist</string>
     <string name="artist_role_main">main artist</string>
     <string name="artist_role_feat">featured artist</string>
     <string name="artist_role_remixer">remixer</string>
