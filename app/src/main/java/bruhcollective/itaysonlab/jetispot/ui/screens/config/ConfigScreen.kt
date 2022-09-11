@@ -85,11 +85,11 @@ class ConfigScreenViewModel @Inject constructor(
     }))
 
     add(ConfigItem.Category(R.string.config_ui))
-    add(ConfigItem.Preference(R.string.color_theme, { ctx, cfg -> "" }, {
+    add(ConfigItem.Preference(R.string.config_color_theme, { ctx, cfg -> "" }, {
       it.navigate(Dialog.ColorSelect)
     }))
 
-    add(ConfigItem.Preference(R.string.edit_animation, {ctx, cfg -> ""}, {
+    add(ConfigItem.Preference(R.string.edit_animation_set_default, {ctx, cfg -> ""}, {
       it.navigate(Dialog.SetArtworkData)
     }))
 
