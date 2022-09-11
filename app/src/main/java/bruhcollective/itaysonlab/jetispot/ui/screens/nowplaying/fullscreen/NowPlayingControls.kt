@@ -16,8 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -97,16 +96,40 @@ fun ControlsHeader(
 
 @Composable
 fun ControlsSeekbar(viewModel: NowPlayingViewModel) {
+  var isSeekbarDragging by remember { mutableStateOf(false) }
+  var seekbarDraggingProgress by remember { mutableStateOf(0f) }
+
+  val elapsedTime = remember(viewModel.currentPosition.value, isSeekbarDragging, seekbarDraggingProgress) {
+    val ms = if (isSeekbarDragging) {
+      (seekbarDraggingProgress * viewModel.currentTrack.value.duration).toLong()
+    } else {
+      viewModel.currentPosition.value.progressMilliseconds
+    } / 1000L
+
+    DateUtils.formatElapsedTime(ms)
+  }
+
+  val totalTime = remember(viewModel.currentPosition.value) {
+    DateUtils.formatElapsedTime(viewModel.currentTrack.value.duration / 1000L)
+  }
+
   Box {
     Slider(
-      value = viewModel.currentPosition.value.progressRange,
+      modifier = Modifier.padding(horizontal = 6.dp),
+      value = if (isSeekbarDragging) seekbarDraggingProgress else viewModel.currentPosition.value.progressRange,
       colors = SliderDefaults.colors(
         thumbColor = monet.onSecondaryContainer,
         activeTrackColor = monet.onSecondaryContainer.copy(0.85f),
         inactiveTrackColor = monet.onSecondaryContainer.copy(alpha = 0.2f)
       ),
-      onValueChange = {},
-      modifier = Modifier.padding(horizontal = 6.dp)
+      onValueChange = {
+        isSeekbarDragging = true
+        seekbarDraggingProgress = it
+      },
+      onValueChangeFinished = {
+        isSeekbarDragging = false
+        // TODO
+      }
     )
 
     Column(
@@ -118,7 +141,7 @@ fun ControlsSeekbar(viewModel: NowPlayingViewModel) {
     ) {
       Row(Modifier.height(52.dp), verticalAlignment = Alignment.Bottom) {
         Text(
-          text = viewModel.currentPosition.value.progressFmt,
+          text = elapsedTime,
           color = monet.onSecondaryContainer.copy(0.85f),
           fontSize = 12.sp,
           fontWeight = FontWeight.Bold
@@ -127,7 +150,7 @@ fun ControlsSeekbar(viewModel: NowPlayingViewModel) {
         Text(text = " / ", color = monet.onSecondaryContainer.copy(0.85f), fontSize = 12.sp)
 
         Text(
-          text = DateUtils.formatElapsedTime(viewModel.currentTrack.value.duration / 1000L),
+          text = totalTime,
           color = monet.onSecondaryContainer.copy(0.85f),
           fontSize = 12.sp,
           fontWeight = FontWeight.Bold
