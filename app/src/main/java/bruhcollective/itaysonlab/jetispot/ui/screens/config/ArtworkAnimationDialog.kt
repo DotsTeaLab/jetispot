@@ -34,7 +34,7 @@ fun ArtworkAnimationDialog(navController: NavController) {
             dampingValue = it
             AppPreferences.NPAnimationDamping = it
           },
-          valueRange = 0f..10f
+          valueRange = 0f..2f
         )
 
         Text("Stiffness: $stiffnessValue", textAlign = TextAlign.Center)
@@ -45,7 +45,7 @@ fun ArtworkAnimationDialog(navController: NavController) {
             stiffnessValue =  it
             AppPreferences.NPAnimationStiffness = it
           },
-          valueRange = 0f..10000f
+          valueRange = 0f..2000f
         )
       }
     },
