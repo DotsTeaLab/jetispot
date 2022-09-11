@@ -89,7 +89,7 @@ class ConfigScreenViewModel @Inject constructor(
       it.navigate(Dialog.ColorSelect)
     }))
 
-    add(ConfigItem.Preference(R.string.edit_animation_set_default, {ctx, cfg -> ""}, {
+    add(ConfigItem.Preference(R.string.edit_animation, {ctx, cfg -> ""}, {
       it.navigate(Dialog.SetArtworkData)
     }))
 

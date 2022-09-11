@@ -58,6 +58,7 @@
     <string name="theme_reload_message">The app will restart to change the theme</string>
 
     <string name="config_edit_animation">Edit NowPlaying animation</string>
+    <string name="edit_animation">Edit Now Playing animation</string>
     <string name="edit_animation_set_default">Set default</string>
 
     <string name="config_logout">Logout</string>
