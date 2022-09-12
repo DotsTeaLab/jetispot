@@ -43,7 +43,7 @@ fun ArtworkAnimationSheet(navController: NavController) {
     )
 
     Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-      Text("Damping: $dampingValue", textAlign = TextAlign.Center)
+      Text("Damping: $dampingValue", textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface)
 
       Slider(
         value = dampingValue!!,
@@ -54,7 +54,7 @@ fun ArtworkAnimationSheet(navController: NavController) {
         valueRange = 0f..2f
       )
 
-      Text("Stiffness: $stiffnessValue", textAlign = TextAlign.Center)
+      Text("Stiffness: $stiffnessValue", textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onSurface)
 
       Slider(
         value = stiffnessValue,
