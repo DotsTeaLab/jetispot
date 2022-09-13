@@ -118,13 +118,21 @@ fun NowPlayingFullscreenComposition (
         Column(
           modifier = Modifier
             .alpha(bsOffset)
-            .navigationBarsPadding()
             .fillMaxHeight()
             .padding(
               top = max(
-                animateDpAsState(if (isLyricsFullscreen) 0.dp else 16.dp, spring(damping, stiffness)).value,
+                animateDpAsState(
+                  if (isLyricsFullscreen) 0.dp else 16.dp,
+                  spring(damping, stiffness)
+                ).value,
                 0.dp
-              )
+              ),
+              bottom = animateDpAsState(
+                if (isLyricsFullscreen)
+                  0.dp
+                else
+                  WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+              ).value
             ),
           verticalArrangement = Arrangement.SpaceBetween
         ) {
@@ -156,7 +164,10 @@ fun NowPlayingFullscreenComposition (
               .onGloballyPositioned { artworkPositionCalc = it.boundsInParent() }
           ) { }
 
-          Column(Modifier.padding(horizontal = 8.dp).weight(1f, false)) {
+          Column(
+            Modifier
+              .padding(horizontal = 8.dp)
+              .weight(1f, false)) {
             ControlsHeader(scope, bottomSheetState, viewModel)
             ControlsSeekbar(viewModel)
           }

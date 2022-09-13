@@ -92,17 +92,12 @@ fun Lyrics(
         Modifier
           .height(
             animateDpAsState(
-              if (isTextFullscreen)
-                screenHeight - WindowInsets.navigationBars
-                  .asPaddingValues()
-                  .calculateBottomPadding()
-              else
-                0.dp,
+              if (isTextFullscreen) screenHeight else 0.dp,
               spring(damping * 1.3f, stiffness * 1f)
             ).value
           )
           .padding(horizontal = 22.dp)
-          .statusBarsPadding()
+          .systemBarsPadding()
           .fillMaxWidth()
           .animateContentSize(spring(damping * 1.3f, stiffness * 1f))
       ) {
