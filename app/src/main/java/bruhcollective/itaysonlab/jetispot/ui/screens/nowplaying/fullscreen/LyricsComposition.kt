@@ -1,8 +1,11 @@
 package bruhcollective.itaysonlab.jetispot.ui.screens.nowplaying.fullscreen
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -66,7 +69,7 @@ fun LyricsComposition(
           .padding(horizontal = 12.dp)
           .systemBarsPadding()
           .fillMaxWidth()
-          .animateContentSize(spring(damping, stiffness))
+//          .animateContentSize(spring(damping, stiffness))
       ) {
         LyricsMiniplayer(viewModel) { lyricsClickAction() }
 
@@ -136,8 +139,8 @@ fun LyricsControls(isTextFullscreen: Boolean, viewModel: NowPlayingViewModel, da
   ) {
     AnimatedVisibility(
       visible = isTextFullscreen,
-      enter = slideInVertically(spring(damping, stiffness)) { 5000 },
-      exit = slideOutVertically(spring(damping, stiffness)) { 5000 }
+      enter = slideInVertically(spring(damping, stiffness)) { 1000 },
+      exit = slideOutVertically(spring(damping, stiffness)) { 1000 }
     ) {
       Surface(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -153,9 +156,7 @@ fun LyricsControls(isTextFullscreen: Boolean, viewModel: NowPlayingViewModel, da
         PlayPauseButton(
           isPlaying = viewModel.currentState.value == SpPlayerServiceManager.PlaybackState.Playing,
           color = MaterialTheme.colorScheme.surfaceVariant,
-          modifier = Modifier
-            .size(64.dp)
-            .align(Alignment.CenterVertically)
+          modifier = Modifier.size(64.dp).align(Alignment.CenterVertically)
         )
       }
     }
@@ -167,16 +168,14 @@ fun LyricsCollapsed(isTextFullscreen: Boolean, damping: Float, stiffness: Float,
   Row(
     modifier = Modifier
       .clickable(remember { MutableInteractionSource() }, null) { lyricsClickAction() }
-      .height(animateDpAsState(if (isTextFullscreen) 0.dp else 56.dp, spring(damping, stiffness)).value)
-      .animateContentSize(spring(damping, stiffness)),
+      .height(animateDpAsState(if (isTextFullscreen) 0.dp else 56.dp, spring(damping, stiffness)).value),
+//      .animateContentSize(spring(damping, stiffness)),
     verticalAlignment = Alignment.CenterVertically
   ) {
     Icon(Icons.Rounded.MenuBook, contentDescription = "", modifier = Modifier.padding(start = 16.dp))
 
     Column(
-      Modifier
-        .weight(1f)
-        .height(64.dp),
+      Modifier.weight(1f).height(64.dp),
       verticalArrangement = Arrangement.Center
     ) {
       Text(
@@ -202,8 +201,7 @@ fun LyricsExpanded() {
       Text(
         text = "Dummy lyrics text",
         fontSize = 24.sp,
-        fontWeight = FontWeight.Medium,
-        modifier = Modifier.padding(top = 0.dp)
+        fontWeight = FontWeight.Medium
       )
     }
   }
