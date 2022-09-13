@@ -280,7 +280,7 @@ fun ControlsBottomAccessories(
   ) {
     IconButton(
       onClick = { /*TODO*/ },
-      modifier = Modifier.size(animateDpAsState(if (isLyricsFullscreen) 0.dp else 56.dp, spring(damping * 1.3f, stiffness * 1f)).value),
+      modifier = Modifier.size(animateDpAsState(if (isLyricsFullscreen) 0.dp else 56.dp, spring(damping, stiffness)).value),
       colors = IconButtonDefaults.iconButtonColors(
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(0.85f)
       )
@@ -291,11 +291,7 @@ fun ControlsBottomAccessories(
         modifier = Modifier
           .size(32.dp)
           .clip(CircleShape)
-          .background(
-            monet.primaryContainer
-              .blendWith(monet.primary, 0.3f)
-              .copy(0.5f)
-          )
+          .background(monet.primaryContainer.blendWith(monet.primary, 0.3f).copy(0.5f))
           .padding(6.dp)
       )
     }
@@ -306,13 +302,13 @@ fun ControlsBottomAccessories(
         if (hasLyrics) max(
           0.dp,
           animateDpAsState(
-            if (isLyricsFullscreen) 0.dp else 128.dp, spring(damping * 1.3f, stiffness)
+            if (isLyricsFullscreen) 0.dp else 128.dp, spring(damping, stiffness)
           ).value
         ) else 0.dp
       )
     ) {
       if (hasLyrics)
-        LyricsComposition(viewModel, isLyricsFullscreen, damping * 1.1f, stiffness * 0.9f) { lyricsClickAction() }
+        LyricsComposition(viewModel, isLyricsFullscreen, damping, stiffness) { lyricsClickAction() }
     }
 
     IconButton(

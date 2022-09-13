@@ -52,8 +52,8 @@ fun NowPlayingFullscreenComposition (
             WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 1.dp
   val screenWidth = LocalConfiguration.current.screenWidthDp
 
-  val damping = NPAnimationDamping!!
-  val stiffness = NPAnimationStiffness!!
+  val damping = kotlin.math.max(NPAnimationDamping!!, 0.0000001f)
+  val stiffness = kotlin.math.max(NPAnimationStiffness!!, 0.0000001f)
   
   Box(
     modifier = Modifier
@@ -123,7 +123,7 @@ fun NowPlayingFullscreenComposition (
               top = max(
                 animateDpAsState(
                   if (isLyricsFullscreen) 0.dp else 16.dp,
-                  spring(damping, stiffness)
+                  spring(damping * 1.1f, stiffness * 0.9f)
                 ).value,
                 0.dp
               ),
@@ -131,7 +131,8 @@ fun NowPlayingFullscreenComposition (
                 if (isLyricsFullscreen)
                   0.dp
                 else
-                  WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                  WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
+                spring(damping * 1.1f, stiffness * 0.9f)
               ).value
             ),
           verticalArrangement = Arrangement.SpaceBetween
@@ -183,8 +184,8 @@ fun NowPlayingFullscreenComposition (
             queueOpened,
             setQueueOpened,
             isLyricsFullscreen,
-            damping,
-            stiffness,
+            damping * 1.3f,
+            stiffness * 0.9f,
           )
         }
       }

@@ -1,11 +1,8 @@
 package bruhcollective.itaysonlab.jetispot.ui.screens.nowplaying.fullscreen
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,7 +12,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Expand
+import androidx.compose.material.icons.rounded.ExpandLess
 import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.MenuBook
 import androidx.compose.material.ripple.rememberRipple
@@ -69,7 +66,6 @@ fun LyricsComposition(
           .padding(horizontal = 12.dp)
           .systemBarsPadding()
           .fillMaxWidth()
-//          .animateContentSize(spring(damping, stiffness))
       ) {
         LyricsMiniplayer(viewModel) { lyricsClickAction() }
 
@@ -131,51 +127,69 @@ fun LyricsGradientsFullscreen(lyricsScrollBehavior: LazyListState) {
 }
 
 @Composable
-fun LyricsControls(isTextFullscreen: Boolean, viewModel: NowPlayingViewModel, damping: Float, stiffness: Float) {
+fun LyricsControls(
+  isTextFullscreen: Boolean,
+  viewModel: NowPlayingViewModel,
+  damping: Float, stiffness: Float
+) {
   Row(
-    Modifier.height(128.dp).fillMaxWidth(),
+    Modifier
+      .height(animateDpAsState(if (isTextFullscreen) 128.dp else 0.dp, spring(damping * 1.3f, stiffness)).value)
+      .fillMaxWidth(),
     horizontalArrangement = Arrangement.Center,
     verticalAlignment = Alignment.CenterVertically
   ) {
-    AnimatedVisibility(
-      visible = isTextFullscreen,
-      enter = slideInVertically(spring(damping, stiffness)) { 1000 },
-      exit = slideOutVertically(spring(damping, stiffness)) { 1000 }
+    Surface(
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+      modifier = Modifier
+        .padding(vertical = 28.dp)
+        .clip(RoundedCornerShape(28.dp))
+        .height(72.dp)
+        .width(106.dp)
+        .clickable(
+          interactionSource = remember { MutableInteractionSource() },
+          indication = rememberRipple(color = MaterialTheme.colorScheme.primary)
+        ) { viewModel.togglePlayPause() }
     ) {
-      Surface(
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+      PlayPauseButton(
+        isPlaying = viewModel.currentState.value == SpPlayerServiceManager.PlaybackState.Playing,
+        color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = Modifier
-          .clip(RoundedCornerShape(28.dp))
-          .height(72.dp)
-          .width(106.dp)
-          .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = rememberRipple(color = MaterialTheme.colorScheme.primary)
-          ) { viewModel.togglePlayPause() }
-      ) {
-        PlayPauseButton(
-          isPlaying = viewModel.currentState.value == SpPlayerServiceManager.PlaybackState.Playing,
-          color = MaterialTheme.colorScheme.surfaceVariant,
-          modifier = Modifier.size(64.dp).align(Alignment.CenterVertically)
-        )
-      }
+          .size(64.dp)
+          .align(Alignment.CenterVertically)
+      )
     }
   }
 }
 
 @Composable
-fun LyricsCollapsed(isTextFullscreen: Boolean, damping: Float, stiffness: Float, lyricsClickAction: () -> Unit) {
+fun LyricsCollapsed(
+  isTextFullscreen: Boolean,
+  damping: Float,
+  stiffness: Float,
+  lyricsClickAction: () -> Unit
+) {
   Row(
     modifier = Modifier
       .clickable(remember { MutableInteractionSource() }, null) { lyricsClickAction() }
-      .height(animateDpAsState(if (isTextFullscreen) 0.dp else 56.dp, spring(damping, stiffness)).value),
-//      .animateContentSize(spring(damping, stiffness)),
+      .height(
+        animateDpAsState(
+          if (isTextFullscreen) 0.dp else 56.dp,
+          spring(damping, stiffness)
+        ).value
+      ),
     verticalAlignment = Alignment.CenterVertically
   ) {
-    Icon(Icons.Rounded.MenuBook, contentDescription = "", modifier = Modifier.padding(start = 16.dp))
+    Icon(
+      Icons.Rounded.MenuBook,
+      contentDescription = "",
+      modifier = Modifier.padding(start = 16.dp).size(16.dp)
+    )
 
     Column(
-      Modifier.weight(1f).height(64.dp),
+      Modifier
+        .weight(1f)
+        .height(64.dp),
       verticalArrangement = Arrangement.Center
     ) {
       Text(
@@ -186,11 +200,13 @@ fun LyricsCollapsed(isTextFullscreen: Boolean, damping: Float, stiffness: Float,
         maxLines = 3,
         textAlign = TextAlign.Center,
         overflow = TextOverflow.Ellipsis,
-        modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 4.dp)
+        modifier = Modifier
+          .align(Alignment.CenterHorizontally)
+          .padding(horizontal = 8.dp)
       )
     }
 
-    Icon(Icons.Rounded.Expand, contentDescription = "", modifier = Modifier.padding(end = 16.dp))
+    Icon(Icons.Rounded.ExpandLess, contentDescription = "", modifier = Modifier.padding(end = 16.dp))
   }
 }
 
@@ -217,7 +233,9 @@ fun LyricsMiniplayer(viewModel: NowPlayingViewModel, lyricsClickAction: () -> Un
       Icon(
         Icons.Rounded.ExpandMore,
         contentDescription = "Close",
-        modifier = Modifier.size(35.dp).alpha(0.7f)
+        modifier = Modifier
+          .size(35.dp)
+          .alpha(0.7f)
       )
     }
     Column(
@@ -246,7 +264,9 @@ fun LyricsMiniplayer(viewModel: NowPlayingViewModel, lyricsClickAction: () -> Un
         maxLines = 1,
         fontSize = 14.sp,
         textAlign = TextAlign.Center,
-        modifier = Modifier.padding(top = 2.dp).fillMaxWidth()
+        modifier = Modifier
+          .padding(top = 2.dp)
+          .fillMaxWidth()
       )
     }
   }
