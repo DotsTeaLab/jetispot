@@ -301,9 +301,7 @@ fun ControlsBottomAccessories(
     }
 
     Card(
-      modifier = Modifier
-        .weight(1f)
-        .clickable(remember { MutableInteractionSource() }, null) { if (hasLyrics) lyricsClickAction() },
+      modifier = Modifier.weight(1f),
       shape = RoundedCornerShape(
         if (hasLyrics) max(
           0.dp,
@@ -314,7 +312,7 @@ fun ControlsBottomAccessories(
       )
     ) {
       if (hasLyrics)
-        Lyrics(viewModel, isLyricsFullscreen, damping, stiffness)
+        LyricsComposition(viewModel, isLyricsFullscreen, damping * 1.1f, stiffness * 0.9f) { lyricsClickAction() }
     }
 
     IconButton(
