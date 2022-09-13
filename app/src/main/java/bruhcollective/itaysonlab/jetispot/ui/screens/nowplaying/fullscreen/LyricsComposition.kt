@@ -13,16 +13,15 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Expand
+import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.MenuBook
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -36,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bruhcollective.itaysonlab.jetispot.core.SpPlayerServiceManager
 import bruhcollective.itaysonlab.jetispot.ui.screens.nowplaying.NowPlayingViewModel
+import bruhcollective.itaysonlab.jetispot.ui.shared.MarqueeText
 import bruhcollective.itaysonlab.jetispot.ui.shared.PlayPauseButton
 
 @Composable
@@ -63,7 +63,7 @@ fun LyricsComposition(
               if (isTextFullscreen) screenHeight else 0.dp, spring(damping, stiffness)
             ).value
           )
-          .padding(horizontal = 22.dp)
+          .padding(horizontal = 12.dp)
           .systemBarsPadding()
           .fillMaxWidth()
           .animateContentSize(spring(damping, stiffness))
@@ -71,7 +71,7 @@ fun LyricsComposition(
         LyricsMiniplayer(viewModel) { lyricsClickAction() }
 
         Box(Modifier.weight(1f)) {
-          LazyColumn(Modifier.fillMaxWidth(), lyricsScrollBehavior, PaddingValues(vertical = 16.dp)) {
+          LazyColumn(Modifier.fillMaxWidth(), lyricsScrollBehavior, PaddingValues(12.dp)) {
             item { LyricsExpanded() }
           }
 
@@ -187,9 +187,7 @@ fun LyricsCollapsed(isTextFullscreen: Boolean, damping: Float, stiffness: Float,
         maxLines = 3,
         textAlign = TextAlign.Center,
         overflow = TextOverflow.Ellipsis,
-        modifier = Modifier
-          .align(Alignment.CenterHorizontally)
-          .padding(horizontal = 4.dp)
+        modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 4.dp)
       )
     }
 
@@ -213,30 +211,45 @@ fun LyricsExpanded() {
 
 @Composable
 fun LyricsMiniplayer(viewModel: NowPlayingViewModel, lyricsClickAction: () -> Unit) {
-  Column(
-    Modifier
-      .fillMaxWidth()
-      .height(72.dp)
-      .padding(vertical = 0.dp),
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center
-  ) {
-    Text(
-      viewModel.currentTrack.value.title,
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-      overflow = TextOverflow.Ellipsis,
-      maxLines = 1,
-      fontSize = 18.sp,
-      fontWeight = FontWeight.Medium
-    )
+  Box() {
+    IconButton(
+      onClick = { lyricsClickAction() },
+      modifier = Modifier.align(Alignment.CenterStart)
+    ) {
+      Icon(
+        Icons.Rounded.ExpandMore,
+        contentDescription = "Close",
+        modifier = Modifier.size(35.dp).alpha(0.7f)
+      )
+    }
+    Column(
+      Modifier
+        .fillMaxWidth()
+        .height(72.dp)
+        .padding(horizontal = 48.dp),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center
+    ) {
+      MarqueeText(
+        viewModel.currentTrack.value.title,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 1,
+        fontSize = 18.sp,
+        textAlign = TextAlign.Center,
+        fontWeight = FontWeight.Medium,
+        modifier = Modifier.fillMaxWidth()
+      )
 
-    Text(
-      viewModel.currentTrack.value.artist,
-      color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-      overflow = TextOverflow.Ellipsis,
-      maxLines = 1,
-      fontSize = 14.sp,
-      modifier = Modifier.padding(top = 2.dp)
-    )
+      MarqueeText(
+        viewModel.currentTrack.value.artist,
+        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 1,
+        fontSize = 14.sp,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.padding(top = 2.dp).fillMaxWidth()
+      )
+    }
   }
 }
