@@ -212,7 +212,7 @@ class MainActivity : ComponentActivity() {
                     isLyricsFullscreen = isLyricsFullscreen
                   )
 
-                  when { bsState.bottomSheetState.direction > 0f -> isLyricsFullscreen = false }
+                  if (bsOffset() < 0.9f) isLyricsFullscreen = false
                 },
                 scaffoldState = bsState,
                 sheetPeekHeight = animateDpAsState(
