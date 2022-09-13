@@ -89,33 +89,3 @@ fun NowPlayingMiniplayer(
     }
   }
 }
-
-@Composable
-fun LyricsMiniplayer(viewModel: NowPlayingViewModel) {
-  Column(
-    Modifier
-      .fillMaxWidth()
-      .height(72.dp)
-      .padding(vertical = 0.dp),
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center
-  ) {
-    Text(
-      viewModel.currentTrack.value.title,
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-      overflow = TextOverflow.Ellipsis,
-      maxLines = 1,
-      fontSize = 18.sp,
-      fontWeight = FontWeight.Medium
-    )
-
-    Text(
-      viewModel.currentTrack.value.artist,
-      color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-      overflow = TextOverflow.Ellipsis,
-      maxLines = 1,
-      fontSize = 14.sp,
-      modifier = Modifier.padding(top = 2.dp)
-    )
-  }
-}
