@@ -1,8 +1,11 @@
 package bruhcollective.itaysonlab.jetispot.ui.screens.nowplaying.fullscreen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -96,13 +99,13 @@ fun Lyrics(
                   .calculateBottomPadding()
               else
                 0.dp,
-              spring(damping * 1.2f, stiffness * 1f)
+              spring(damping * 1.3f, stiffness * 1f)
             ).value
           )
           .padding(horizontal = 22.dp)
           .statusBarsPadding()
           .fillMaxWidth()
-          .animateContentSize(spring(damping * 1f, stiffness * 1f))
+          .animateContentSize(spring(damping * 1.3f, stiffness * 1f))
       ) {
         LyricsMiniplayer(viewModel)
 
@@ -172,24 +175,30 @@ fun Lyrics(
           horizontalArrangement = Arrangement.Center,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          Surface(
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier
-              .clip(RoundedCornerShape(28.dp))
-              .height(72.dp)
-              .width(106.dp)
-              .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(color = MaterialTheme.colorScheme.primary)
-              ) { viewModel.togglePlayPause() }
+          AnimatedVisibility(
+            visible = isTextFullscreen,
+            enter = slideInVertically(spring(damping * 1.3f, stiffness)) { 5000 },
+            exit = slideOutVertically(spring(damping * 1.3f, stiffness)) { 5000 }
           ) {
-            PlayPauseButton(
-              isPlaying = viewModel.currentState.value == SpPlayerServiceManager.PlaybackState.Playing,
-              color = MaterialTheme.colorScheme.surfaceVariant,
+            Surface(
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
               modifier = Modifier
-                .size(64.dp)
-                .align(Alignment.CenterVertically)
-            )
+                .clip(RoundedCornerShape(28.dp))
+                .height(72.dp)
+                .width(106.dp)
+                .clickable(
+                  interactionSource = remember { MutableInteractionSource() },
+                  indication = rememberRipple(color = MaterialTheme.colorScheme.primary)
+                ) { viewModel.togglePlayPause() }
+            ) {
+              PlayPauseButton(
+                isPlaying = viewModel.currentState.value == SpPlayerServiceManager.PlaybackState.Playing,
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier
+                  .size(64.dp)
+                  .align(Alignment.CenterVertically)
+              )
+            }
           }
         }
       }

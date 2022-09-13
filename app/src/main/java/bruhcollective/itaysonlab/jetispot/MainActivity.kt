@@ -141,8 +141,6 @@ class MainActivity : ComponentActivity() {
           }
         }
 
-        when { bsOffset() < 0.99f -> isLyricsFullscreen = false }
-
         DisposableEffect(navController) {
           provider = { navController }
 
@@ -213,6 +211,8 @@ class MainActivity : ComponentActivity() {
                     isLyricsFullscreenAction = { isLyricsFullscreen =! isLyricsFullscreen},
                     isLyricsFullscreen = isLyricsFullscreen
                   )
+
+                  when { bsState.bottomSheetState.direction > 0f -> isLyricsFullscreen = false }
                 },
                 scaffoldState = bsState,
                 sheetPeekHeight = animateDpAsState(

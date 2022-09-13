@@ -265,22 +265,22 @@ fun ControlsBottomAccessories(
   viewModel: NowPlayingViewModel,
   queueOpened: Boolean,
   setQueueOpened: (Boolean) -> Unit,
-  isTextFullscreen: Boolean,
+  isLyricsFullscreen: Boolean,
   damping: Float,
   stiffness: Float,
   hasLyrics: Boolean = false // enable lyrics
 ) {
   Row(
     modifier = Modifier
-      .padding(horizontal = animateDpAsState(if (isTextFullscreen) 0.dp else 8.dp).value)
-      .padding(bottom = animateDpAsState(if (isTextFullscreen) 0.dp else 16.dp).value)
+      .padding(horizontal = animateDpAsState(if (isLyricsFullscreen) 0.dp else 8.dp).value)
+      .padding(bottom = animateDpAsState(if (isLyricsFullscreen) 0.dp else 16.dp).value)
       .fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically
   ) {
     IconButton(
       onClick = { /*TODO*/ },
-      modifier = Modifier.size(animateDpAsState(if (isTextFullscreen) 0.dp else 56.dp, spring(damping * 1.3f, stiffness * 1f)).value),
+      modifier = Modifier.size(animateDpAsState(if (isLyricsFullscreen) 0.dp else 56.dp, spring(damping * 1.3f, stiffness * 1f)).value),
       colors = IconButtonDefaults.iconButtonColors(
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(0.85f)
       )
@@ -308,18 +308,18 @@ fun ControlsBottomAccessories(
         if (hasLyrics) max(
           0.dp,
           animateDpAsState(
-            if (isTextFullscreen) 0.dp else 128.dp, spring(damping * 1.3f, stiffness)
+            if (isLyricsFullscreen) 0.dp else 128.dp, spring(damping * 1.3f, stiffness)
           ).value
         ) else 0.dp
       )
     ) {
       if (hasLyrics)
-        Lyrics(viewModel, isTextFullscreen, damping, stiffness)
+        Lyrics(viewModel, isLyricsFullscreen, damping, stiffness)
     }
 
     IconButton(
       onClick = { setQueueOpened(!queueOpened) },
-      modifier = Modifier.size(animateDpAsState(if (isTextFullscreen) 0.dp else 56.dp, spring(damping, stiffness)).value ),
+      modifier = Modifier.size(animateDpAsState(if (isLyricsFullscreen) 0.dp else 56.dp, spring(damping, stiffness)).value ),
       colors = IconButtonDefaults.iconButtonColors(
         contentColor = monet.onSecondaryContainer.copy(0.85f)
       )
