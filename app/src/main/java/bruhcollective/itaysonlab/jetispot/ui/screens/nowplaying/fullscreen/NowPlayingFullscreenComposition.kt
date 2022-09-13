@@ -127,13 +127,16 @@ fun NowPlayingFullscreenComposition (
                 ).value,
                 0.dp
               ),
-              bottom = animateDpAsState(
-                if (isLyricsFullscreen)
-                  0.dp
-                else
-                  WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
-                spring(damping * 1.1f, stiffness * 0.9f)
-              ).value
+              bottom = max(
+                animateDpAsState(
+                  if (isLyricsFullscreen)
+                    0.dp
+                  else
+                    WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
+                  spring(damping * 1.1f, stiffness * 0.9f)
+                ).value,
+                0.dp
+              )
             ),
           verticalArrangement = Arrangement.SpaceBetween
         ) {

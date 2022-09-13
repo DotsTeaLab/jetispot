@@ -57,7 +57,7 @@ fun ControlsHeader(
         fontSize = 24.sp,
         color = monet.onSecondaryContainer.copy(0.85f),
         fontWeight = FontWeight.ExtraBold,
-        basicGradientColor = if (isSystemInDarkTheme())
+          basicGradientColor = if (isSystemInDarkTheme())
           MaterialTheme.colorScheme.surface.blendWith(monet.primary, ratio = 0.05f)
         else
           MaterialTheme.colorScheme.surface.blendWith(monet.primary, ratio = 0.1f)
@@ -272,8 +272,18 @@ fun ControlsBottomAccessories(
 ) {
   Row(
     modifier = Modifier
-      .padding(horizontal = animateDpAsState(if (isLyricsFullscreen) 0.dp else 8.dp).value)
-      .padding(bottom = animateDpAsState(if (isLyricsFullscreen) 0.dp else 16.dp).value)
+      .padding(
+        horizontal = max(
+          animateDpAsState(if (isLyricsFullscreen) 0.dp else 8.dp, spring(damping, stiffness)).value,
+          0.dp
+        )
+      )
+      .padding(
+        bottom = max(
+          animateDpAsState(if (isLyricsFullscreen) 0.dp else 16.dp, spring(damping, stiffness)).value,
+          0.dp
+        )
+      )
       .fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically
@@ -299,12 +309,13 @@ fun ControlsBottomAccessories(
     Card(
       modifier = Modifier.weight(1f),
       shape = RoundedCornerShape(
-        if (hasLyrics) max(
-          0.dp,
-          animateDpAsState(
-            if (isLyricsFullscreen) 0.dp else 128.dp, spring(damping, stiffness)
-          ).value
-        ) else 0.dp
+        if (hasLyrics)
+          max(
+            0.dp,
+            animateDpAsState(if (isLyricsFullscreen) 0.dp else 128.dp, spring(damping, stiffness)).value
+          )
+        else
+          0.dp
       )
     ) {
       if (hasLyrics)
