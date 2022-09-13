@@ -91,6 +91,7 @@ class MainActivity : ComponentActivity() {
         val navController = rememberNavController(bottomSheetNavigator)
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val lambdaNavController = NavigationController { navController }
+        var isLyricsFullscreen by remember { mutableStateOf(false) }
 
         val navBarHeightDp =
           WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
@@ -127,7 +128,10 @@ class MainActivity : ComponentActivity() {
               bsQueueOpened = false
             } else {
               scope.launch {
-                bsState.bottomSheetState.collapse()
+                if (isLyricsFullscreen)
+                  isLyricsFullscreen = false
+                else
+                  bsState.bottomSheetState.collapse()
               }
             }
           }
@@ -136,6 +140,8 @@ class MainActivity : ComponentActivity() {
             callback?.remove()
           }
         }
+
+        when { bsOffset() < 0.99f -> isLyricsFullscreen = false }
 
         DisposableEffect(navController) {
           provider = { navController }
@@ -203,7 +209,9 @@ class MainActivity : ComponentActivity() {
                     bottomSheetState = bsState.bottomSheetState,
                     bsOffset = bsOffset,
                     queueOpened = bsQueueOpened,
-                    setQueueOpened = { bsQueueOpened = it }
+                    setQueueOpened = { bsQueueOpened = it },
+                    isLyricsFullscreenAction = { isLyricsFullscreen =! isLyricsFullscreen},
+                    isLyricsFullscreen = isLyricsFullscreen
                   )
                 },
                 scaffoldState = bsState,

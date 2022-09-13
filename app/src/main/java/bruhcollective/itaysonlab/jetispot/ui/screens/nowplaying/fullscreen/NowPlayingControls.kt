@@ -2,6 +2,7 @@ package bruhcollective.itaysonlab.jetispot.ui.screens.nowplaying.fullscreen
 
 import android.text.format.DateUtils
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import bruhcollective.itaysonlab.jetispot.core.SpPlayerServiceManager
 import bruhcollective.itaysonlab.jetispot.ui.ext.blendWith
@@ -51,7 +53,7 @@ fun ControlsHeader(
         text = viewModel.currentTrack.value.title,
         modifier = Modifier
           .padding(horizontal = 14.dp)
-          .navClickable{ viewModel.navigateToSource(scope, bottomSheetState, it) },
+          .navClickable { viewModel.navigateToSource(scope, bottomSheetState, it) },
         fontSize = 24.sp,
         color = monet.onSecondaryContainer.copy(0.85f),
         fontWeight = FontWeight.ExtraBold,
@@ -259,21 +261,26 @@ fun ControlsMainButtons(
 
 @Composable
 fun ControlsBottomAccessories(
+  lyricsClickAction: () -> Unit,
   viewModel: NowPlayingViewModel,
   queueOpened: Boolean,
   setQueueOpened: (Boolean) -> Unit,
+  isTextFullscreen: Boolean,
+  damping: Float,
+  stiffness: Float,
+  hasLyrics: Boolean = false // enable lyrics
 ) {
   Row(
     modifier = Modifier
-      .padding(horizontal = 8.dp)
-      .padding(bottom = 16.dp)
+      .padding(horizontal = animateDpAsState(if (isTextFullscreen) 0.dp else 8.dp).value)
+      .padding(bottom = animateDpAsState(if (isTextFullscreen) 0.dp else 16.dp).value)
       .fillMaxWidth(),
-    horizontalArrangement = Arrangement.SpaceBetween
+    horizontalArrangement = Arrangement.SpaceBetween,
+    verticalAlignment = Alignment.CenterVertically
   ) {
     IconButton(
       onClick = { /*TODO*/ },
-      modifier = Modifier
-        .size(56.dp),
+      modifier = Modifier.size(animateDpAsState(if (isTextFullscreen) 0.dp else 56.dp, spring(damping * 1.3f, stiffness * 1f)).value),
       colors = IconButtonDefaults.iconButtonColors(
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(0.85f)
       )
@@ -293,9 +300,26 @@ fun ControlsBottomAccessories(
       )
     }
 
+    Card(
+      modifier = Modifier
+        .weight(1f)
+        .clickable(remember { MutableInteractionSource() }, null) { if (hasLyrics) lyricsClickAction() },
+      shape = RoundedCornerShape(
+        if (hasLyrics) max(
+          0.dp,
+          animateDpAsState(
+            if (isTextFullscreen) 0.dp else 128.dp, spring(damping * 1.3f, stiffness)
+          ).value
+        ) else 0.dp
+      )
+    ) {
+      if (hasLyrics)
+        Lyrics(viewModel, isTextFullscreen, damping, stiffness)
+    }
+
     IconButton(
       onClick = { setQueueOpened(!queueOpened) },
-      modifier = Modifier.size(56.dp),
+      modifier = Modifier.size(animateDpAsState(if (isTextFullscreen) 0.dp else 56.dp, spring(damping, stiffness)).value ),
       colors = IconButtonDefaults.iconButtonColors(
         contentColor = monet.onSecondaryContainer.copy(0.85f)
       )

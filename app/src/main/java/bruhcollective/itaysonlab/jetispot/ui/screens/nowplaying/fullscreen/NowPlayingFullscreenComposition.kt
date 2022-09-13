@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import bruhcollective.itaysonlab.jetispot.ui.ext.blendWith
 import bruhcollective.itaysonlab.jetispot.ui.ext.compositeSurfaceElevation
 import bruhcollective.itaysonlab.jetispot.ui.screens.nowplaying.NowPlayingViewModel
@@ -38,24 +39,33 @@ fun NowPlayingFullscreenComposition (
   bottomSheetState: BottomSheetState,
   mainPagerState: PagerState,
   viewModel: NowPlayingViewModel,
-  bsOffset: Float
+  bsOffset: Float,
+  isLyricsFullscreenAction: () -> Unit,
+  isLyricsFullscreen: Boolean
 ) {
   val scope = rememberCoroutineScope()
+
   var artworkPositionCalc by remember { mutableStateOf(Rect(0f, 0f, 0f, 0f)) }
+  val screenHeight =
+    LocalConfiguration.current.screenHeightDp.dp +
+            WindowInsets.statusBars.asPaddingValues().calculateTopPadding() +
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 1.dp
+  val screenWidth = LocalConfiguration.current.screenWidthDp
+
   val damping = NPAnimationDamping!!
   val stiffness = NPAnimationStiffness!!
-
+  
   Box(
     modifier = Modifier
       .fillMaxSize()
       .background(
         if (isSystemInDarkTheme())
           animateColorAsState(
-            monet.surface.blendWith(monet.primary,0.05f), tween(500)
+            monet.surface.blendWith(monet.primary, 0.05f), tween(500)
           ).value
         else
           animateColorAsState(
-            monet.surface.blendWith(monet.primary,0.1f), tween(500)
+            monet.surface.blendWith(monet.primary, 0.1f), tween(500)
           ).value
       )
   ) {
@@ -69,80 +79,103 @@ fun NowPlayingFullscreenComposition (
     Row(
       Modifier
         .padding(
-          start = animateDpAsState((13f * (1f - bsOffset)).dp, spring()).value,
-          top = animateDpAsState((4f * (1f - bsOffset)).dp, spring()).value
+          start = max(animateDpAsState((13f * (1f - bsOffset)).dp, spring(damping, stiffness)).value, 0.dp),
+          top = max(animateDpAsState((4f * (1f - bsOffset)).dp, spring(damping, stiffness)).value, 0.dp)
         )
     ) {
       animateIntOffsetAsState(
         IntOffset(
-          x = (((LocalConfiguration.current.screenWidthDp) * bsOffset) * (1f - bsOffset)).toInt(),
-          y = ((bsOffset * 2500 * (1f - bsOffset)) + (artworkPositionCalc.top * bsOffset)).toInt()
+          x = (((screenWidth) * bsOffset) * (1f - bsOffset)).toInt(),
+          y =
+          if (isLyricsFullscreen)
+            -2500
+          else
+            ((bsOffset * 2500 * (1f - bsOffset)) + (artworkPositionCalc.top * bsOffset)).toInt()
         ),
-        spring(damping, stiffness, IntOffset(1, 1))
+        spring(damping, stiffness)
       ).value.let {
         Surface(
           color = Color.Transparent,
           modifier = Modifier
             .width(
               animateDpAsState(
-                ((54 * (1f - bsOffset)) + (bsOffset * (LocalConfiguration.current.screenWidthDp))).dp,
-                spring(damping, stiffness, 1.dp)
+                ((54 * (1f - bsOffset)) + (bsOffset * (screenWidth))).dp,
+                spring(damping, stiffness)
               ).value
             )
-            .size(((54 * (1f - bsOffset)) + (bsOffset * (LocalConfiguration.current.screenWidthDp * 0.975f))).dp)
+            .size(((54 * (1f - bsOffset)) + (bsOffset * (screenWidth * 0.975f))).dp)
             .aspectRatio(1f)
             .absoluteOffset { it }
         ) {
           ArtworkPager(viewModel, mainPagerState, bsOffset)
         }
       }
-
     }
 
     Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
       // main content
-      Column(
-        modifier = Modifier
-          .alpha(bsOffset)
-          .navigationBarsPadding()
-          .fillMaxHeight()
-          .padding(top = 16.dp),
-        verticalArrangement = Arrangement.SpaceBetween
-      ) {
-        NowPlayingHeader(
-          stateTitle = stringResource(id = viewModel.getHeaderTitle()),
-          onCloseClick = {
-            if (queueOpened)
-              setQueueOpened(false)
-            else
-              scope.launch { bottomSheetState.collapse() }
-          },
-          queueStateProgress = animateFloatAsState(
-            targetValue = if (queueOpened) 1f else 0f,
-            animationSpec = tween(500, easing = FastOutSlowInEasing)
-          ).value,
-          state = viewModel.getHeaderText(),
-          modifier = Modifier
-            .statusBarsPadding()
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-        )
-
+      Column() {
         Column(
-          Modifier
-            .fillMaxWidth()
-            .height((LocalConfiguration.current.screenWidthDp * 0.9).dp)
-            .onGloballyPositioned { artworkPositionCalc = it.boundsInParent() }
-        ) { }
+          modifier = Modifier
+            .alpha(bsOffset)
+            .navigationBarsPadding()
+            .fillMaxHeight()
+            .padding(
+              top = max(
+                animateDpAsState(if (isLyricsFullscreen) 0.dp else 16.dp, spring(damping, stiffness)).value,
+                0.dp
+              )
+            ),
+          verticalArrangement = Arrangement.SpaceBetween
+        ) {
+          NowPlayingHeader(
+            stateTitle = stringResource(id = viewModel.getHeaderTitle()),
+            onCloseClick = {
+              if (queueOpened)
+                setQueueOpened(false)
+              else
+                scope.launch { bottomSheetState.collapse() }
+            },
+            queueStateProgress = animateFloatAsState(
+              targetValue = if (queueOpened) 1f else 0f,
+              animationSpec = tween(500, easing = FastOutSlowInEasing)
+            ).value,
+            state = viewModel.getHeaderText(),
+            modifier = Modifier
+              .statusBarsPadding()
+              .fillMaxWidth()
+              .weight(1f, false)
+              .padding(horizontal = 16.dp)
+          )
 
-        Column(Modifier.padding(horizontal = 8.dp)) {
-          ControlsHeader(scope, bottomSheetState, viewModel)
-          ControlsSeekbar(viewModel)
+          Column(
+            Modifier
+              .fillMaxWidth()
+              .weight(5f, false)
+              .height((screenWidth * 0.9).dp)
+              .onGloballyPositioned { artworkPositionCalc = it.boundsInParent() }
+          ) { }
+
+          Column(Modifier.padding(horizontal = 8.dp).weight(1f, false)) {
+            ControlsHeader(scope, bottomSheetState, viewModel)
+            ControlsSeekbar(viewModel)
+          }
+
+          Box(Modifier.weight(1f, false)) {
+            ControlsMainButtons(viewModel, queueOpened, setQueueOpened)
+          }
+
+
+          ControlsBottomAccessories(
+            { isLyricsFullscreenAction() },
+            viewModel,
+            queueOpened,
+            setQueueOpened,
+            isLyricsFullscreen,
+            damping,
+            stiffness,
+          )
         }
-
-        ControlsMainButtons(viewModel, queueOpened, setQueueOpened)
-
-        ControlsBottomAccessories(viewModel, queueOpened, setQueueOpened)
       }
     }
 

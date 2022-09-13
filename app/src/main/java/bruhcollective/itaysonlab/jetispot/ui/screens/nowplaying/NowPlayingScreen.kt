@@ -30,6 +30,8 @@ fun NowPlayingScreen(
   viewModel: NowPlayingViewModel = hiltViewModel(),
   queueOpened: Boolean,
   setQueueOpened: (Boolean) -> Unit,
+  isLyricsFullscreenAction: () -> Unit,
+  isLyricsFullscreen: Boolean
 ) {
   val scope = rememberCoroutineScope()
   val mainPagerState = rememberPagerState()
@@ -67,7 +69,9 @@ fun NowPlayingScreen(
         bottomSheetState = bottomSheetState,
         mainPagerState = mainPagerState,
         viewModel = viewModel,
-        bsOffset = bsOffset()
+        bsOffset = bsOffset(),
+        isLyricsFullscreenAction = { isLyricsFullscreenAction() },
+        isLyricsFullscreen = isLyricsFullscreen
       )
 
       // Wrapped in an if statement to not interfere with buttons as the miniplayer composable fills
