@@ -13,10 +13,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import bruhcollective.itaysonlab.jetispot.ui.ext.rememberEUCScrollBehavior
 import bruhcollective.itaysonlab.jetispot.ui.navigation.LocalNavigationController
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrowseRadioScreen() {
   val navController = LocalNavigationController.current
+
   val scrollBehavior = rememberEUCScrollBehavior()
   var appBarTitle by remember { mutableStateOf("") }
 
@@ -27,11 +29,12 @@ fun BrowseRadioScreen() {
       IconButton(onClick = { navController.popBackStack() }) {
         Icon(Icons.Rounded.ArrowBack, null)
       }
-    }, colors = TopAppBarDefaults.largeTopAppBarColors(), scrollBehavior = scrollBehavior)
+    }, colors = TopAppBarDefaults.largeTopAppBarColors(),
+      scrollBehavior = scrollBehavior)
   }, modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection)) { padding ->
     Box(Modifier.padding(padding)) {
       HubScreen(
-        needContentPadding = false,
+        needContentPadding = true,
         loader = { getRadioHub() },
         onAppBarTitleChange = { appBarTitle = it }
       )

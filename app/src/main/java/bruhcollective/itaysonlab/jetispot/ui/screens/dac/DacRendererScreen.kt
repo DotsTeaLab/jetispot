@@ -8,9 +8,7 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -19,6 +17,7 @@ import bruhcollective.itaysonlab.jetispot.core.api.SpInternalApi
 import bruhcollective.itaysonlab.jetispot.ui.dac.DacRender
 import bruhcollective.itaysonlab.jetispot.ui.dac.components_home.FilterComponentBinder
 import bruhcollective.itaysonlab.jetispot.ui.ext.dynamicUnpack
+import bruhcollective.itaysonlab.jetispot.ui.ext.rememberEUCScrollBehavior
 import bruhcollective.itaysonlab.jetispot.ui.navigation.LocalNavigationController
 import bruhcollective.itaysonlab.jetispot.ui.shared.PagingErrorPage
 import bruhcollective.itaysonlab.jetispot.ui.shared.PagingLoadingPage
@@ -44,7 +43,7 @@ fun DacRendererScreen(
 ) {
   val navController = LocalNavigationController.current
 
-  val scrollBehavior = if (!fullscreen) TopAppBarDefaults.exitUntilCollapsedScrollBehavior() else TopAppBarDefaults.pinnedScrollBehavior()
+  val topBarState = rememberEUCScrollBehavior()
   val scope = rememberCoroutineScope()
 
   LaunchedEffect(Unit) {
@@ -53,22 +52,23 @@ fun DacRendererScreen(
 
   when (viewModel.state) {
     is DacViewModel.State.Loaded -> {
-      Scaffold(topBar = {
-        if (fullscreen) {
-          TopAppBar(title = {}, colors = TopAppBarDefaults.smallTopAppBarColors(
-            containerColor = Color.Transparent,
-            scrolledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
-          ), scrollBehavior = scrollBehavior)
-        } else {
-          LargeTopAppBar(title = {
-            Text(title)
-          }, navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
-              Icon(Icons.Rounded.ArrowBack, null)
-            }
-          }, scrollBehavior = scrollBehavior)
+      Scaffold(
+        topBar = {
+          if (fullscreen) { } else {
+            LargeTopAppBar(
+              title = { Text(title) },
+              navigationIcon = {
+                IconButton(onClick = { navController.popBackStack() }) {
+                 Icon(Icons.Rounded.ArrowBack, null)
+               }
+          },
+            scrollBehavior = topBarState
+          )
         }
-      }, modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) { padding ->
+      },
+        modifier = Modifier.nestedScroll(topBarState.nestedScrollConnection)
+      )
+      { padding ->
         LazyColumn(
           modifier = Modifier
             .fillMaxHeight()
@@ -90,7 +90,12 @@ fun DacRendererScreen(
                   when (exception) {
                     is ClassNotFoundException -> {
                       Text("DAC unsupported component", Modifier.padding(horizontal = 16.dp))
-                      Text(exception.message ?: "", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f), modifier = Modifier.padding(top = 4.dp).padding(horizontal = 16.dp))
+                      Text(exception.message ?: "",
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        modifier = Modifier
+                          .padding(top = 4.dp)
+                          .padding(horizontal = 16.dp)
+                      )
                     }
                     else -> {
                       Text("DAC rendering error: ${exception.message}\n\n${exception.stackTraceToString()}")
@@ -100,14 +105,14 @@ fun DacRendererScreen(
                   Spacer(modifier = Modifier.height(8.dp))
                 } else if (unpackedItem != null) {
                   if (unpackedItem is FilterComponent) {
-                    FilterComponentBinder(unpackedItem, viewModel.facet) { nf ->
+                    FilterComponentBinder(topBarState, unpackedItem, viewModel.facet) { nf ->
                       scope.launch {
                         viewModel.facet = nf
                         viewModel.reload(loader)
                       }
                     }
                   } else {
-                    DacRender(unpackedItem)
+                    DacRender(unpackedItem, topBarState)
                   }
                 }
               }
@@ -127,7 +132,11 @@ fun DacRendererScreen(
     }
 
     is DacViewModel.State.Error -> {
-      PagingErrorPage(exception = (viewModel.state as DacViewModel.State.Error).error, onReload = { scope.launch { viewModel.reload(loader) } }, modifier = Modifier.fillMaxSize())
+      PagingErrorPage(
+        exception = (viewModel.state as DacViewModel.State.Error).error,
+        onReload = { scope.launch { viewModel.reload(loader) } },
+        modifier = Modifier.fillMaxSize()
+      )
     }
 
     DacViewModel.State.Loading -> {

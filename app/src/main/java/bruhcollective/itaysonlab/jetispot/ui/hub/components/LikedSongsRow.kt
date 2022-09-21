@@ -13,19 +13,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bruhcollective.itaysonlab.jetispot.core.objs.hub.HubEvent
 import bruhcollective.itaysonlab.jetispot.core.objs.hub.HubItem
 import bruhcollective.itaysonlab.jetispot.ui.hub.LocalHubScreenDelegate
 import bruhcollective.itaysonlab.jetispot.ui.hub.clickableHub
-import bruhcollective.itaysonlab.jetispot.ui.shared.MediumText
-import bruhcollective.itaysonlab.jetispot.ui.shared.PreviewableAsyncImage
-import bruhcollective.itaysonlab.jetispot.ui.shared.Subtext
+import bruhcollective.itaysonlab.jetispot.ui.shared.MarqueeText
 import kotlinx.coroutines.launch
 import xyz.gianlu.librespot.metadata.ArtistId
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
 fun LikedSongsRow(
   item: HubItem
@@ -44,31 +48,21 @@ fun LikedSongsRow(
     Row(
       Modifier
         .clickableHub(item)
-        .padding(horizontal = 16.dp, vertical = 12.dp)
+        .padding(start = 16.dp, top = 16.dp)
     ) {
 
       Box(Modifier.size(48.dp)) {
-        PreviewableAsyncImage(
-          imageUrl = item.images?.main?.uri,
-          placeholderType = item.images?.main?.placeholder,
-          modifier = Modifier
-            .clip(CircleShape)
-            .align(Alignment.Center)
-            .size(48.dp)
-        )
-        Box(
-          Modifier.offset(4.dp, 4.dp).clip(CircleShape).size(28.dp)
-            .background(MaterialTheme.colorScheme.surface).align(Alignment.BottomEnd)
-        ) {
+        Box(Modifier.clip(CircleShape).background(MaterialTheme.colorScheme.tertiaryContainer)) {
           Box(
-            Modifier.clip(CircleShape).size(22.dp).background(MaterialTheme.colorScheme.primary)
-              .align(Alignment.Center)
+            Modifier
+              .clip(CircleShape)
+              .size(48.dp)
           ) {
             Icon(
               imageVector = Icons.Rounded.Favorite,
-              tint = MaterialTheme.colorScheme.onPrimary,
+              tint = MaterialTheme.colorScheme.onTertiaryContainer,
               contentDescription = null,
-              modifier = Modifier.padding(4.dp)
+              modifier = Modifier.align(Alignment.Center)
             )
           }
         }
@@ -79,8 +73,18 @@ fun LikedSongsRow(
           .align(Alignment.CenterVertically)
           .padding(start = 16.dp)
       ) {
-        MediumText(item.text!!.title!!, fontWeight = FontWeight.Normal)
-        Subtext(likedSongsInfo.value, modifier = Modifier.padding(top = 4.dp))
+        MarqueeText(
+          item.text!!.title!!,
+          fontSize = 16.sp,
+          style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+        )
+        MarqueeText(
+          likedSongsInfo.value,
+          fontSize = 14.sp,
+          fontWeight = FontWeight.Medium,
+          style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
+          modifier = Modifier.padding(top = 4.dp).alpha(0.7f)
+        )
       }
     }
   }

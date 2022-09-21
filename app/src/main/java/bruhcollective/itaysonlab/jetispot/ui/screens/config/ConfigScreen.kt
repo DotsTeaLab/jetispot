@@ -3,6 +3,7 @@ package bruhcollective.itaysonlab.jetispot.ui.screens.config
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import bruhcollective.itaysonlab.jetispot.core.SpSessionManager
 import bruhcollective.itaysonlab.jetispot.proto.AppConfig
 import bruhcollective.itaysonlab.jetispot.proto.AudioNormalization
 import bruhcollective.itaysonlab.jetispot.proto.AudioQuality
+import bruhcollective.itaysonlab.jetispot.ui.screens.BottomSheet
 import bruhcollective.itaysonlab.jetispot.ui.screens.Dialog
 import bruhcollective.itaysonlab.jetispot.ui.screens.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -82,6 +84,16 @@ class ConfigScreenViewModel @Inject constructor(
 
     add(ConfigItem.Preference(R.string.storage, { ctx, cfg -> "" }, {
       it.navigate(Screen.StorageConfig)
+    }))
+
+    add(ConfigItem.Category(R.string.config_ui))
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
+      add(ConfigItem.Preference(R.string.config_color_theme, { ctx, cfg -> "" }, {
+       it.navigate(BottomSheet.ColorSelect.route)
+      }))
+
+    add(ConfigItem.Preference(R.string.edit_animation, {ctx, cfg -> ""}, {
+      it.navigate(BottomSheet.SetArtworkData.route)
     }))
 
     add(ConfigItem.Category(R.string.config_account))
