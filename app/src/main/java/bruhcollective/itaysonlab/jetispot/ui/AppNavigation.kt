@@ -7,17 +7,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.*
-import androidx.navigation.compose.*
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
+import androidx.navigation.navDeepLink
 import bruhcollective.itaysonlab.jetispot.R
 import bruhcollective.itaysonlab.jetispot.core.SpAuthManager
 import bruhcollective.itaysonlab.jetispot.core.SpSessionManager
 import bruhcollective.itaysonlab.jetispot.core.api.SpInternalApi
+import bruhcollective.itaysonlab.jetispot.ui.bottomsheets.ArtworkAnimationSheet
+import bruhcollective.itaysonlab.jetispot.ui.bottomsheets.ColorSelectSheet
 import bruhcollective.itaysonlab.jetispot.ui.bottomsheets.jump_to_artist.JumpToArtistBottomSheet
 import bruhcollective.itaysonlab.jetispot.ui.screens.BottomSheet
 import bruhcollective.itaysonlab.jetispot.ui.screens.Dialog
@@ -40,7 +47,8 @@ fun AppNavigation(
   navController: NavHostController,
   sessionManager: SpSessionManager,
   authManager: SpAuthManager,
-  modifier: Modifier
+  modifier: Modifier,
+  bsVisible: Boolean
 ) {
   LaunchedEffect(Unit) {
     if (sessionManager.isSignedIn()) return@LaunchedEffect
@@ -102,7 +110,7 @@ fun AppNavigation(
     composable(Screen.QualityConfig.route) { QualityConfigScreen() }
     composable(Screen.NormalizationConfig.route) { NormalizationConfigScreen() }
     composable(Screen.Search.route) { BrowseRootScreen() }
-    composable(Screen.Library.route) { YourLibraryContainerScreen() }
+    composable(Screen.Library.route) { YourLibraryContainerScreen(bsVisible) }
 
     dialog(Dialog.AuthDisclaimer.route) {
       AlertDialog(onDismissRequest = { navController.popBackStack() }, icon = {
@@ -135,9 +143,17 @@ fun AppNavigation(
         }
       }, dismissButton = {
         TextButton(onClick = { navController.popBackStack() }) {
-          Text(stringResource(id = R.string.logout_cancel))
+          Text(stringResource(id = R.string.close))
         }
       })
+    }
+
+    bottomSheet(BottomSheet.ColorSelect.route){
+      ColorSelectSheet(navController)
+    }
+
+    bottomSheet(BottomSheet.SetArtworkData.route) {
+      ArtworkAnimationSheet(navController)
     }
 
     bottomSheet(BottomSheet.JumpToArtist.route) { entry ->

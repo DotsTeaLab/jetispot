@@ -2,9 +2,9 @@ package bruhcollective.itaysonlab.jetispot.ui.screens
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Home
 import androidx.compose.runtime.Immutable
 import bruhcollective.itaysonlab.jetispot.R
 
@@ -54,5 +54,7 @@ enum class Dialog(
 enum class BottomSheet(
   val route: String
 ) {
-  JumpToArtist("bs/jumpToArtist/{artistIdsAndRoles}") // ID=ROLE|ID=ROLE
+  JumpToArtist("bs/jumpToArtist/{artistIdsAndRoles}"), // ID=ROLE|ID=ROLE
+  ColorSelect("dialogs/ColorSelect"),
+  SetArtworkData("dialogs/SetArtworkData")
 }

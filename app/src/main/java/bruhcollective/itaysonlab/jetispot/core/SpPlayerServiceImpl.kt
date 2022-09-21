@@ -12,7 +12,6 @@ import androidx.media2.session.SessionToken
 import bruhcollective.itaysonlab.jetispot.core.util.Log
 import bruhcollective.itaysonlab.jetispot.playback.helpers.MediaItemWrapper
 import bruhcollective.itaysonlab.jetispot.playback.service.SpPlaybackService
-import com.spotify.extendedmetadata.ExtensionKindOuterClass
 import com.spotify.metadata.Metadata
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch

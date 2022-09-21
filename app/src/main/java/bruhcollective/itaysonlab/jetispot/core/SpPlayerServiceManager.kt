@@ -3,22 +3,17 @@ package bruhcollective.itaysonlab.jetispot.core
 import android.content.Context
 import android.os.Bundle
 import androidx.annotation.FloatRange
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.util.Pair
 import bruhcollective.itaysonlab.jetispot.core.objs.player.PlayFromContextPlayerData
 import bruhcollective.itaysonlab.jetispot.playback.helpers.MediaItemWrapper
-import com.google.common.util.concurrent.ListenableFuture
 import com.spotify.metadata.Metadata
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.coroutines.resume
 
 @OptIn(ExperimentalStdlibApi::class)
 @Singleton
@@ -45,10 +40,10 @@ class SpPlayerServiceManager @Inject constructor(
     private val pairData: Pair<Float, Long>
   ) {
     val progressRange: Float
-    @FloatRange(from = 0.0, to = 1.0) get() = pairData.first.coerceIn(0f..1f)
+      @FloatRange(from = 0.0, to = 1.0) get() = pairData.first.coerceIn(0f..1f)
 
     val progressMilliseconds: Long
-    get() = pairData.second
+      get() = pairData.second
   }
 
   fun reset() {
