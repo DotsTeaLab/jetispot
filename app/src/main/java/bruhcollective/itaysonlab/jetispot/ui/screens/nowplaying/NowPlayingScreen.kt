@@ -70,8 +70,8 @@ fun NowPlayingScreen(
         mainPagerState = mainPagerState,
         viewModel = viewModel,
         bsOffset = bsOffset(),
-        isLyricsFullscreenAction = { isLyricsFullscreenAction() },
-        isLyricsFullscreen = isLyricsFullscreen
+        setLyricsOpened = { isLyricsFullscreenAction() },
+        lyricsOpened = isLyricsFullscreen
       )
 
       // Wrapped in an if statement to not interfere with buttons as the miniplayer composable fills

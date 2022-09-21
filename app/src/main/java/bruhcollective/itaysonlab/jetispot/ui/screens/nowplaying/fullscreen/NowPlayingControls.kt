@@ -130,7 +130,7 @@ fun ControlsSeekbar(viewModel: NowPlayingViewModel) {
       },
       onValueChangeFinished = {
         isSeekbarDragging = false
-        // TODO
+        viewModel.seekTo((seekbarDraggingProgress * viewModel.currentTrack.value.duration).toLong())
       }
     )
 
@@ -267,9 +267,10 @@ fun ControlsBottomAccessories(
   setQueueOpened: (Boolean) -> Unit,
   isLyricsFullscreen: Boolean,
   damping: Float,
-  stiffness: Float,
-  hasLyrics: Boolean = false // enable lyrics
+  stiffness: Float
 ) {
+  val hasLyrics = false
+
   Row(
     modifier = Modifier
       .padding(

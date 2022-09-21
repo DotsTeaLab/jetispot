@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity() {
         val navController = rememberNavController(bottomSheetNavigator)
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val lambdaNavController = NavigationController { navController }
-        var isLyricsFullscreen by remember { mutableStateOf(false) }
+        var bsLyricsOpened by remember { mutableStateOf(false) }
 
         val navBarHeightDp =
           WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
@@ -128,8 +128,8 @@ class MainActivity : ComponentActivity() {
               bsQueueOpened = false
             } else {
               scope.launch {
-                if (isLyricsFullscreen)
-                  isLyricsFullscreen = false
+                if (bsLyricsOpened)
+                  bsLyricsOpened = false
                 else
                   bsState.bottomSheetState.collapse()
               }
@@ -208,11 +208,11 @@ class MainActivity : ComponentActivity() {
                     bsOffset = bsOffset,
                     queueOpened = bsQueueOpened,
                     setQueueOpened = { bsQueueOpened = it },
-                    isLyricsFullscreenAction = { isLyricsFullscreen =! isLyricsFullscreen},
-                    isLyricsFullscreen = isLyricsFullscreen
+                    isLyricsFullscreenAction = { bsLyricsOpened =! bsLyricsOpened},
+                    isLyricsFullscreen = bsLyricsOpened
                   )
 
-                  if (bsOffset() < 0.9f) isLyricsFullscreen = false
+                  if (bsOffset() < 0.9f) bsLyricsOpened = false
                 },
                 scaffoldState = bsState,
                 sheetPeekHeight = animateDpAsState(

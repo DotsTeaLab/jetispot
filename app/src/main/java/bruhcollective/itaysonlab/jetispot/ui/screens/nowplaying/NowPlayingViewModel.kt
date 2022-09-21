@@ -11,10 +11,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.ViewModel
 import bruhcollective.itaysonlab.jetispot.R
 import bruhcollective.itaysonlab.jetispot.core.SpPlayerServiceManager
 import bruhcollective.itaysonlab.jetispot.core.api.SpPartnersApi
+import bruhcollective.itaysonlab.jetispot.core.lyrics.SpLyricsController
 import bruhcollective.itaysonlab.jetispot.core.util.SpUtils
 import bruhcollective.itaysonlab.jetispot.ui.monet.ColorToScheme
 import bruhcollective.itaysonlab.jetispot.ui.navigation.NavigationController
@@ -28,7 +30,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NowPlayingViewModel @Inject constructor(
   private val spPlayerServiceManager: SpPlayerServiceManager,
-  private val spPartnersApi: SpPartnersApi
+  private val spPartnersApi: SpPartnersApi,
+  val spLyricsController: SpLyricsController
 ) : ViewModel(), SpPlayerServiceManager.ServiceExtraListener, CoroutineScope by MainScope() {
   // states
   val currentTrack get() = spPlayerServiceManager.currentTrack
@@ -40,6 +43,7 @@ class NowPlayingViewModel @Inject constructor(
   val currentQueuePosition get() = spPlayerServiceManager.currentQueuePosition
   val currentBgColor = mutableStateOf(Color.Transparent)
   var queueButtonParams by mutableStateOf(Offset.Zero)
+  var lyricsCardParams by mutableStateOf(Offset.Zero to IntSize(0, 0))
 
   // TODO animate
   val currentColorScheme = mutableStateOf(lightColorScheme() to darkColorScheme())
@@ -56,6 +60,7 @@ class NowPlayingViewModel @Inject constructor(
   fun skipPrevious() = spPlayerServiceManager.skipPrevious()
   fun togglePlayPause() = spPlayerServiceManager.playPause()
   fun skipNext() = spPlayerServiceManager.skipNext()
+  fun seekTo(ms: Long) = spPlayerServiceManager.seekTo(ms)
 
   @OptIn(ExperimentalMaterialApi::class)
   fun navigateToSource(scope: CoroutineScope, sheetState: BottomSheetState, navigationController: NavigationController) {
@@ -85,6 +90,8 @@ class NowPlayingViewModel @Inject constructor(
     if (currentQueue.value.isEmpty()) return
     uiOnTrackIndexChanged.invoke(new)
 
+    spLyricsController.setSong(currentQueue.value[new])
+
     imageColorTask?.cancel()
     imageColorTask = launch(Dispatchers.IO) {
       currentColorScheme.value = calculateDominantColor(
@@ -93,6 +100,10 @@ class NowPlayingViewModel @Inject constructor(
           ?: return@launch
       )
     }
+  }
+
+  override fun onTrackProgressChanged(pos: Long) {
+    spLyricsController.setProgress(pos)
   }
 
   fun getHeaderTitle(): Int {

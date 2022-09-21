@@ -40,9 +40,12 @@ fun NowPlayingFullscreenComposition (
   mainPagerState: PagerState,
   viewModel: NowPlayingViewModel,
   bsOffset: Float,
-  isLyricsFullscreenAction: () -> Unit,
-  isLyricsFullscreen: Boolean
+  setLyricsOpened: () -> Unit,
+  lyricsOpened: Boolean
 ) {
+  val damping = kotlin.math.max(NPAnimationDamping!!, 0.0000001f)
+  val stiffness = kotlin.math.max(NPAnimationStiffness!!, 0.0000001f)
+
   val scope = rememberCoroutineScope()
 
   var artworkPositionCalc by remember { mutableStateOf(Rect(0f, 0f, 0f, 0f)) }
@@ -52,8 +55,24 @@ fun NowPlayingFullscreenComposition (
             WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 1.dp
   val screenWidth = LocalConfiguration.current.screenWidthDp
 
-  val damping = kotlin.math.max(NPAnimationDamping!!, 0.0000001f)
-  val stiffness = kotlin.math.max(NPAnimationStiffness!!, 0.0000001f)
+  val lyricsProgress = animateFloatAsState(
+    if (lyricsOpened) 1f else 0f,
+    tween(500, easing = FastOutSlowInEasing)
+  )
+  val lyricsProgressValue = lyricsProgress.value
+
+  val queueProgress = animateFloatAsState(
+    if (queueOpened) 1f else 0f,
+    animationSpec = tween(500, easing = FastOutSlowInEasing)
+  )
+  val queueProgressValue = queueProgress.value
+  val anySuperProgress = remember(queueProgressValue, lyricsProgressValue) {
+    if (queueProgressValue > 0f) {
+      queueProgressValue
+    } else {
+      lyricsProgressValue
+    }
+  }
   
   Box(
     modifier = Modifier
@@ -87,7 +106,7 @@ fun NowPlayingFullscreenComposition (
         IntOffset(
           x = (((screenWidth) * bsOffset) * (1f - bsOffset)).toInt(),
           y =
-          if (isLyricsFullscreen)
+          if (lyricsOpened)
             -2500
           else
             ((bsOffset * 2500 * (1f - bsOffset)) + (artworkPositionCalc.top * bsOffset)).toInt()
@@ -122,14 +141,14 @@ fun NowPlayingFullscreenComposition (
             .padding(
               top = max(
                 animateDpAsState(
-                  if (isLyricsFullscreen) 0.dp else 16.dp,
+                  if (lyricsOpened) 0.dp else 16.dp,
                   spring(damping * 1.1f, stiffness * 0.9f)
                 ).value,
                 0.dp
               ),
               bottom = max(
                 animateDpAsState(
-                  if (isLyricsFullscreen)
+                  if (lyricsOpened)
                     0.dp
                   else
                     WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
@@ -182,11 +201,11 @@ fun NowPlayingFullscreenComposition (
 
 
           ControlsBottomAccessories(
-            { isLyricsFullscreenAction() },
+            { setLyricsOpened() },
             viewModel,
             queueOpened,
             setQueueOpened,
-            isLyricsFullscreen,
+            lyricsOpened,
             damping * 1.3f,
             stiffness * 0.9f,
           )

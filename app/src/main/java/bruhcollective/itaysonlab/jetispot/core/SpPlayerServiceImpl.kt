@@ -2,7 +2,6 @@ package bruhcollective.itaysonlab.jetispot.core
 
 import android.content.ComponentName
 import android.content.Context
-import android.text.format.DateUtils
 import androidx.core.content.ContextCompat
 import androidx.media2.common.MediaItem
 import androidx.media2.common.MediaMetadata
@@ -13,7 +12,6 @@ import androidx.media2.session.SessionToken
 import bruhcollective.itaysonlab.jetispot.core.util.Log
 import bruhcollective.itaysonlab.jetispot.playback.helpers.MediaItemWrapper
 import bruhcollective.itaysonlab.jetispot.playback.service.SpPlaybackService
-import com.spotify.extendedmetadata.ExtensionKindOuterClass
 import com.spotify.metadata.Metadata
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
@@ -87,8 +85,6 @@ class SpPlayerServiceImpl(
   override fun onCurrentMediaItemChanged(controller: MediaController, item: MediaItem?) {
     manager.currentTrack.value = MediaItemWrapper(item)
     manager.currentQueuePosition.value = controller.currentMediaItemIndex
-    manager.currentTrackDurationFmt.value =
-      DateUtils.formatElapsedTime(manager.currentTrack.value.duration / 1000L)
     manager.runExtra { it.onTrackIndexChanged(manager.currentQueuePosition.value) }
   }
 
