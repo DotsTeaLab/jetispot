@@ -141,6 +141,10 @@ class SpPlayerServiceImpl(
                 p
               )
             )
+
+            manager.runExtra {
+              it.onTrackProgressChanged(p)
+            }
           }
         }
       }
