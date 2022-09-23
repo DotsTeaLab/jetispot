@@ -1,7 +1,7 @@
 package bruhcollective.itaysonlab.jetispot.ui.screens.nowplaying.fullscreen
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,14 +40,14 @@ import bruhcollective.itaysonlab.jetispot.ui.shared.MarqueeText
 import bruhcollective.itaysonlab.jetispot.ui.shared.PlayPauseButton
 
 @Composable
-fun LyricsComposition(
+fun NowPlayingLyricsComposition(
   viewModel: NowPlayingViewModel,
   isTextFullscreen: Boolean,
   damping: Float,
   stiffness: Float,
   lyricsClickAction: () -> Unit
 ) {
-  val lyricsScrollBehavior = rememberLazyListState()
+  val listState = rememberLazyListState()
   val screenHeight =
     LocalConfiguration.current.screenHeightDp.dp +
             WindowInsets.statusBars.asPaddingValues().calculateTopPadding() +
@@ -71,11 +71,9 @@ fun LyricsComposition(
         LyricsHeader(viewModel) { lyricsClickAction() }
 
         Box(Modifier.weight(1f)) {
-          LazyColumn(Modifier.fillMaxWidth(), lyricsScrollBehavior, PaddingValues(12.dp)) {
-            item { LyricsExpanded(viewModel) }
-          }
+          LyricsExpanded(viewModel, Modifier.fillMaxWidth(), listState, PaddingValues(12.dp, 16.dp))
 
-//          LyricsGradientsFullscreen(lyricsScrollBehavior)
+          LyricsGradientsFullscreen(listState)
         }
 
         LyricsControls(isTextFullscreen, viewModel, damping, stiffness)
@@ -89,37 +87,31 @@ fun LyricsGradientsFullscreen(lyricsScrollBehavior: LazyListState) {
   Box(Modifier.fillMaxSize()) {
     Box(
       modifier = Modifier
-        .fillMaxHeight(0.2f)
+        .fillMaxHeight(0.1f)
         .fillMaxWidth()
         .background(
           Brush.verticalGradient(
-            listOf(
-              animateColorAsState(
-                if (lyricsScrollBehavior.firstVisibleItemIndex != 0)
-                  MaterialTheme.colorScheme.surfaceVariant
-                else
-                  Color.Transparent
-              ).value,
-              Color.Transparent
-            )
+            animateFloatAsState(
+              if (lyricsScrollBehavior.firstVisibleItemIndex != 0) 1f else 0f
+            ).value.let { value ->
+              listOf(
+                MaterialTheme.colorScheme.surfaceVariant.copy(value),
+                Color.Transparent
+              )
+            }
           )
         )
     )
     Box(
       modifier = Modifier
-        .fillMaxHeight(0.2f)
+        .fillMaxHeight(0.1f)
         .fillMaxWidth()
         .align(Alignment.BottomCenter)
         .background(
           Brush.verticalGradient(
             listOf(
               Color.Transparent,
-              animateColorAsState(
-                if (lyricsScrollBehavior.firstVisibleItemIndex != 0)
-                  MaterialTheme.colorScheme.surfaceVariant
-                else
-                  Color.Transparent
-              ).value,
+              MaterialTheme.colorScheme.surfaceVariant,
             )
           )
         )
@@ -135,7 +127,12 @@ fun LyricsControls(
 ) {
   Row(
     Modifier
-      .height(animateDpAsState(if (isTextFullscreen) 128.dp else 0.dp, spring(damping * 1.3f, stiffness)).value)
+      .height(
+        animateDpAsState(
+          if (isTextFullscreen) 108.dp else 0.dp,
+          spring(damping * 1.3f, stiffness)
+        ).value
+      )
       .fillMaxWidth(),
     horizontalArrangement = Arrangement.Center,
     verticalAlignment = Alignment.CenterVertically
@@ -143,7 +140,7 @@ fun LyricsControls(
     Surface(
       color = MaterialTheme.colorScheme.onSurfaceVariant,
       modifier = Modifier
-        .padding(vertical = 28.dp)
+        .padding(top = 8.dp, bottom = 28.dp)
         .clip(RoundedCornerShape(28.dp))
         .height(72.dp)
         .width(106.dp)
@@ -185,7 +182,9 @@ fun LyricsCollapsed(
     Icon(
       Icons.Rounded.MenuBook,
       contentDescription = "",
-      modifier = Modifier.padding(start = 16.dp).size(16.dp)
+      modifier = Modifier
+        .padding(start = 16.dp)
+        .size(16.dp)
     )
 
     Column(
@@ -213,12 +212,17 @@ fun LyricsCollapsed(
 }
 
 @Composable
-fun LyricsExpanded(viewModel: NowPlayingViewModel) {
+fun LyricsExpanded(
+  viewModel: NowPlayingViewModel,
+  modifier: Modifier,
+  listState: LazyListState,
+  padding: PaddingValues
+) {
 //  val lyricsPosition = Offset(
 //    x = lerp(viewModel.lyricsCardParams.first.x, 0f),
 //    y = lerp(viewModel.lyricsCardParams.first.y, 0f),
 //  )
-  LazyColumn(Modifier.statusBarsPadding()) {
+  LazyColumn(modifier, listState, padding) {
     items(viewModel.spLyricsController.currentLyricsLines) { line ->
       Text(
         text = line.words,
@@ -234,7 +238,7 @@ private fun LyricsHeader(viewModel: NowPlayingViewModel, lyricsClickAction: () -
   Box() {
     IconButton(
       onClick = { lyricsClickAction() },
-      modifier = Modifier.align(Alignment.CenterStart)
+      modifier = Modifier.align(Alignment.CenterStart).padding(top = 8.dp)
     ) {
       Icon(
         Icons.Rounded.ExpandMore,
@@ -247,7 +251,7 @@ private fun LyricsHeader(viewModel: NowPlayingViewModel, lyricsClickAction: () -
     Column(
       Modifier
         .fillMaxWidth()
-        .height(72.dp)
+        .height(64.dp)
         .padding(horizontal = 48.dp),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center
@@ -260,7 +264,10 @@ private fun LyricsHeader(viewModel: NowPlayingViewModel, lyricsClickAction: () -
         fontSize = 18.sp,
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Medium,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(top = 8.dp),
+        basicGradientColor = MaterialTheme.colorScheme.surfaceVariant
       )
 
       MarqueeText(
@@ -270,6 +277,7 @@ private fun LyricsHeader(viewModel: NowPlayingViewModel, lyricsClickAction: () -
         maxLines = 1,
         fontSize = 14.sp,
         textAlign = TextAlign.Center,
+        basicGradientColor = MaterialTheme.colorScheme.surfaceVariant,
         modifier = Modifier
           .padding(top = 2.dp)
           .fillMaxWidth()

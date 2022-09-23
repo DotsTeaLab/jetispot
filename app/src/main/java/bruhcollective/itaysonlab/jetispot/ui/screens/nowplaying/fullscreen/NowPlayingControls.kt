@@ -2,6 +2,7 @@ package bruhcollective.itaysonlab.jetispot.ui.screens.nowplaying.fullscreen
 
 import android.text.format.DateUtils
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,6 +21,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -269,19 +271,25 @@ fun ControlsBottomAccessories(
   damping: Float,
   stiffness: Float
 ) {
-  val hasLyrics = false
+  val hasLyrics = viewModel.spLyricsController.currentLyricsLines.size> 0
 
   Row(
     modifier = Modifier
       .padding(
         horizontal = max(
-          animateDpAsState(if (isLyricsFullscreen) 0.dp else 8.dp, spring(damping, stiffness)).value,
+          animateDpAsState(
+            if (isLyricsFullscreen) 0.dp else 8.dp,
+            spring(damping, stiffness)
+          ).value,
           0.dp
         )
       )
       .padding(
         bottom = max(
-          animateDpAsState(if (isLyricsFullscreen) 0.dp else 16.dp, spring(damping, stiffness)).value,
+          animateDpAsState(
+            if (isLyricsFullscreen) 0.dp else 16.dp,
+            spring(damping, stiffness)
+          ).value,
           0.dp
         )
       )
@@ -302,26 +310,35 @@ fun ControlsBottomAccessories(
         modifier = Modifier
           .size(32.dp)
           .clip(CircleShape)
-          .background(monet.primaryContainer.blendWith(monet.primary, 0.3f).copy(0.5f))
+          .background(
+            monet.primaryContainer
+              .blendWith(monet.primary, 0.3f)
+              .copy(0.5f)
+          )
           .padding(6.dp)
       )
     }
 
-    Card(
-      modifier = Modifier.weight(1f),
-      shape = RoundedCornerShape(
+    animateFloatAsState(if (hasLyrics) 1f else 0f).value.let { value ->
+      Card(
+        modifier = Modifier
+          .weight(1f)
+          .alpha(value),
+        shape = RoundedCornerShape(
+          if (hasLyrics)
+            max(
+              0.dp,
+              animateDpAsState(if (isLyricsFullscreen) 0.dp else 128.dp, spring(damping, stiffness)).value
+            )
+          else
+            0.dp
+        )
+      ) {
         if (hasLyrics)
-          max(
-            0.dp,
-            animateDpAsState(if (isLyricsFullscreen) 0.dp else 128.dp, spring(damping, stiffness)).value
-          )
-        else
-          0.dp
-      )
-    ) {
-      if (hasLyrics)
-        LyricsComposition(viewModel, isLyricsFullscreen, damping, stiffness) { lyricsClickAction() }
+          NowPlayingLyricsComposition(viewModel, isLyricsFullscreen, damping, stiffness) { lyricsClickAction() }
+      }
     }
+
 
     IconButton(
       onClick = { setQueueOpened(!queueOpened) },
