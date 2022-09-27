@@ -12,8 +12,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
-import bruhcollective.itaysonlab.jetispot.core.SpPlayerServiceManager
 import bruhcollective.itaysonlab.jetispot.core.api.SpInternalApi
+import bruhcollective.itaysonlab.jetispot.proto.ErrorComponent
 import bruhcollective.itaysonlab.jetispot.ui.dac.DacRender
 import bruhcollective.itaysonlab.jetispot.ui.dac.components_home.FilterComponentBinder
 import bruhcollective.itaysonlab.jetispot.ui.ext.dynamicUnpack
@@ -27,8 +27,11 @@ import com.spotify.dac.api.components.VerticalListComponent
 import com.spotify.dac.api.v1.proto.DacResponse
 import com.spotify.home.dac.component.experimental.v1.proto.FilterComponent
 import com.spotify.home.dac.component.v1.proto.HomePageComponent
+import com.spotify.home.dac.component.v1.proto.ToolbarComponent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 // generally just a HubScreen with simplifed code and DAC arch usage
@@ -54,7 +57,11 @@ fun DacRendererScreen(
     is DacViewModel.State.Loaded -> {
       Scaffold(
         topBar = {
-          if (fullscreen) { } else {
+          if (fullscreen) {
+            (viewModel.state as? DacViewModel.State.Loaded)?.sticky?.let { msg ->
+              DacRender(msg, topBarState)
+            }
+          } else {
             LargeTopAppBar(
               title = { Text(title) },
               navigationIcon = {
@@ -62,7 +69,8 @@ fun DacRendererScreen(
                   Icon(Icons.Rounded.ArrowBack, null)
                 }
               },
-              scrollBehavior = topBarState
+              scrollBehavior = topBarState,
+              windowInsets = WindowInsets.statusBars
             )
           }
         },
@@ -72,19 +80,19 @@ fun DacRendererScreen(
         LazyColumn(
           modifier = Modifier
             .fillMaxHeight()
-            .let { if (!fullscreen) it.padding(padding) else it }
+            .let { if (fullscreen) it.padding(padding) else it }
         ) {
           (viewModel.state as? DacViewModel.State.Loaded)?.apply {
             items(data) { item ->
               if (item is FilterComponent) {
-                FilterComponentBinder(item, viewModel.facet) { nf ->
+                FilterComponentBinder(topBarState, item, viewModel.facet) { nf ->
                   scope.launch {
                     viewModel.facet = nf
                     viewModel.reload(loader)
                   }
                 }
               } else {
-                DacRender(item)
+                DacRender(item, topBarState)
               }
             }
 

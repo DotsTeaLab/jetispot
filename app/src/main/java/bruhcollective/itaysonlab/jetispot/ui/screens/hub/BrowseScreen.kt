@@ -1,9 +1,6 @@
 package bruhcollective.itaysonlab.jetispot.ui.screens.hub
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
@@ -11,7 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import bruhcollective.itaysonlab.jetispot.ui.ext.rememberEUCScrollBehavior
 import bruhcollective.itaysonlab.jetispot.ui.navigation.LocalNavigationController
 
@@ -40,7 +36,7 @@ fun BrowseScreen(
    modifier = Modifier
      .fillMaxSize()
      .nestedScroll(scrollBehavior.nestedScrollConnection),
-   contentWindowInsets = WindowInsets(top = 0.dp)
+   contentWindowInsets = WindowInsets.statusBars
   ) { padding ->
     Box(Modifier.padding(padding)) {
       HubScreen(

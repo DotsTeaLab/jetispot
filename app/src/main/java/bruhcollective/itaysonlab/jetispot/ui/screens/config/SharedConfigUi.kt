@@ -62,17 +62,23 @@ fun BaseConfigScreen(
   val dsConfig = dsConfigState.value
   val navController = LocalNavigationController.current
 
-  Scaffold(topBar = {
-    LargeTopAppBar(title = {
-      Text(stringResource(viewModel.provideTitle()))
-    }, navigationIcon = {
-      if (!viewModel.isRoot()) {
-        IconButton(onClick = { navController.popBackStack() }) {
-          Icon(Icons.Rounded.ArrowBack, null)
-        }
-      }
-    }, scrollBehavior = scrollBehavior)
-  }, modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), contentWindowInsets = WindowInsets(top = 0.dp)) { padding ->
+  Scaffold(
+    topBar = {
+      LargeTopAppBar(
+        title = { Text(stringResource(viewModel.provideTitle())) },
+        navigationIcon = {
+          if (!viewModel.isRoot()) {
+            IconButton(onClick = { navController.popBackStack() }) {
+              Icon(Icons.Rounded.ArrowBack, null)
+            }
+          }
+        },
+        scrollBehavior = scrollBehavior
+      )
+    },
+    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    contentWindowInsets = WindowInsets.statusBars
+  ) { padding ->
     LazyColumn(
       Modifier
         .fillMaxHeight()
