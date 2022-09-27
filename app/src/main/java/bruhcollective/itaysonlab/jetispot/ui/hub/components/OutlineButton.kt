@@ -18,13 +18,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import bruhcollective.itaysonlab.jetispot.core.objs.hub.HubItem
-import bruhcollective.itaysonlab.jetispot.ui.hub.HubScreenDelegate
 import bruhcollective.itaysonlab.jetispot.ui.hub.clickableHub
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun OutlineButton(item: HubItem) {
-  Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
+  Box(Modifier.fillMaxWidth().padding(top = 8.dp), contentAlignment = Alignment.Center){
     Box(
       Modifier
         .height(40.dp)
