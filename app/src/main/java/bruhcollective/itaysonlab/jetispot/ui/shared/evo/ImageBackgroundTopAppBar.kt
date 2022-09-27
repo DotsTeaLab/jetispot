@@ -180,12 +180,10 @@ private fun TwoRowsTopAppBar(
     Modifier
   }
 
-  Box(modifier = modifier.background(color = appBarContainerColor).then(appBarDragModifier)) {
-    Box(
-      modifier = Modifier
-        .alpha(titleAlpha)
-        .height((maxHeight + 42.dp) * titleAlpha)
-    ) {
+  Box(modifier = modifier.then(appBarDragModifier)) {
+    Box(modifier = Modifier
+      .alpha(titleAlpha)
+      .height((maxHeight + 42.dp) * titleAlpha)) {
       CompositionLocalProvider(content = picture)
       Box(
         Modifier
@@ -207,6 +205,12 @@ private fun TwoRowsTopAppBar(
       ) {}
     }
 
+    Box(
+      Modifier
+        .fillMaxWidth()
+        .height(pinnedHeight + WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
+        .background(appBarContainerColor)
+    )
     val colors = MaterialTheme.colorScheme
     Column(
       Modifier
