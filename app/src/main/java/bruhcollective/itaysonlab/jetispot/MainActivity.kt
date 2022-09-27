@@ -165,14 +165,10 @@ class MainActivity : ComponentActivity() {
                      .offset {
                        IntOffset(
                          0,
-                         ((80.dp + navBarHeightDp).toPx() * bsOffset()).toInt()
+                         ((80.dp + navBarHeightDp).toPx() * bsOffset() * 3f).toInt()
                        )
                      }
-                     .background(
-                       MaterialTheme.colorScheme.compositeSurfaceElevation(
-                         3.dp
-                       )
-                     )
+                     .background(MaterialTheme.colorScheme.compositeSurfaceElevation(3.dp))
                  ) {
                    Screen.showInBottomNavigation.forEach { (screen, icon) ->
                      NavigationBarItem(
@@ -221,20 +217,24 @@ class MainActivity : ComponentActivity() {
                 backgroundColor = MaterialTheme.colorScheme.surface,
                 sheetGesturesEnabled = !bsQueueOpened
               ) { innerScaffoldPadding ->
-                AppNavigation(
-                  navController = navController,
-                  sessionManager = sessionManager,
-                  authManager = authManager,
-                  bsVisible = bsVisible,
-                  modifier = Modifier
-                    .blur(animateFloatAsState(64 * bsOffset(), spring()).value.dp)
-                    .graphicsLayer(
-                      scaleX = animateFloatAsState(1f - bsOffset() * 0.1f, spring()).value,
-                      scaleY = animateFloatAsState(1f - bsOffset() * 0.1f, spring()).value
+                animateFloatAsState(1f - bsOffset() * 0.1f, spring()).value.let { zoom ->
+                  animateFloatAsState(64 * bsOffset(), spring()).value.dp.let { blur ->
+                    AppNavigation(
+                      navController = navController,
+                      sessionManager = sessionManager,
+                      authManager = authManager,
+                      bsVisible = bsVisible,
+                      modifier = Modifier
+                        .blur(blur)
+                        .graphicsLayer {
+                          scaleX = zoom
+                          scaleY = zoom
+                        }
+                        .padding(innerScaffoldPadding)
+                        .padding(bottom = if (bsVisible) 0.dp else 80.dp)
                     )
-                    .padding(innerScaffoldPadding)
-                    .padding(bottom = if (bsVisible) 0.dp else 80.dp)
-                )
+                  }
+                }
               }
             }
           }
