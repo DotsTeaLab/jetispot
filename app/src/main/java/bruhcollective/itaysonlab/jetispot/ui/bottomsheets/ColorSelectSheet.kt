@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import bruhcollective.itaysonlab.jetispot.R
+import bruhcollective.itaysonlab.jetispot.ui.screens.config.ColorSchemePreviewBox
 import bruhcollective.itaysonlab.jetispot.ui.shared.AppPreferences
-import bruhcollective.itaysonlab.jetispot.ui.shared.colorSchemePreviewBoxV1
 
 @Composable
 fun ColorSelectSheet(navController: NavController) {
@@ -45,45 +45,45 @@ fun ColorSelectSheet(navController: NavController) {
       Text(stringResource(id = R.string.theme_reload_message), textAlign = TextAlign.Center)
 
       Row(Modifier.padding(top = 8.dp)){
-        colorSchemePreviewBoxV1(
-          SchemeColor = "#1DB954",
+        ColorSchemePreviewBox(
+          schemeColor = "#1DB954",
           onClick = { AppPreferences.ColorScheme = "#1DB954" }
         ) // TODO: maybe kill all activity and start MainActivity?
-        colorSchemePreviewBoxV1(
-          SchemeColor = "#134D2B",
+        ColorSchemePreviewBox(
+          schemeColor = "#134D2B",
           onClick = { AppPreferences.ColorScheme = "#134D2B" }
         )
-        colorSchemePreviewBoxV1(
-          SchemeColor = "#4DA818",
+        ColorSchemePreviewBox(
+          schemeColor = "#4DA818",
           onClick = { AppPreferences.ColorScheme = "#4DA818" }
         )
-        colorSchemePreviewBoxV1(
-          SchemeColor = "#A1A818",
+        ColorSchemePreviewBox(
+          schemeColor = "#A1A818",
           onClick = { AppPreferences.ColorScheme = "#A1A818" }
         )
       }
 
       Row {
-        colorSchemePreviewBoxV1(
-          SchemeColor = "#EB4034",
+        ColorSchemePreviewBox(
+          schemeColor = "#EB4034",
           onClick = {
             AppPreferences.ColorScheme = "#EB4034"
           }
         )
-        colorSchemePreviewBoxV1(
-          SchemeColor = "#B60A0D",
+        ColorSchemePreviewBox(
+          schemeColor = "#B60A0D",
           onClick = {
             AppPreferences.ColorScheme = "#B60A0D"
           }
         )
-        colorSchemePreviewBoxV1(
-          SchemeColor = "#6E1E32",
+        ColorSchemePreviewBox(
+          schemeColor = "#6E1E32",
           onClick = {
             AppPreferences.ColorScheme = "#6E1E32"
           }
         )
-        colorSchemePreviewBoxV1(
-          SchemeColor = "#B60A86",
+        ColorSchemePreviewBox(
+          schemeColor = "#B60A86",
           onClick = {
             AppPreferences.ColorScheme = "#B60A86"
           }
@@ -91,14 +91,14 @@ fun ColorSelectSheet(navController: NavController) {
       }
 
       Row(Modifier.padding(bottom = 8.dp)){
-        colorSchemePreviewBoxV1(
-          SchemeColor = "#056786",
+        ColorSchemePreviewBox(
+          schemeColor = "#056786",
           onClick = {
             AppPreferences.ColorScheme = "#056786"
           }
         )
-        colorSchemePreviewBoxV1(
-          SchemeColor = "#009182",
+        ColorSchemePreviewBox(
+          schemeColor = "#009182",
           onClick = { AppPreferences.ColorScheme = "#009182"
           }
         )
