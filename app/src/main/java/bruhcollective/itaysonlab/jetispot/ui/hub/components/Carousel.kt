@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bruhcollective.itaysonlab.jetispot.core.objs.hub.HubItem
 import bruhcollective.itaysonlab.jetispot.ui.hub.HubBinder
-import bruhcollective.itaysonlab.jetispot.ui.hub.HubScreenDelegate
 import bruhcollective.itaysonlab.jetispot.ui.hub.LocalHubScreenDelegate
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.SnapOffsets
@@ -55,7 +54,7 @@ fun Carousel(
     Box(
       Modifier
         .wrapContentSize()
-        .padding(horizontal = 16.dp)
+        .padding(horizontal = if (isSurroundedWithPadding) 0.dp else 16.dp)
         .clip(shape = RoundedCornerShape(34.dp))
     ) {
       Card(
