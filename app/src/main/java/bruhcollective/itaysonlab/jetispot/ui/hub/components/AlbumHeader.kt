@@ -137,7 +137,7 @@ fun AlbumHeader(
             .size(38.dp)
             .background(
               MaterialTheme.colorScheme
-                .surfaceColorAtElevation(4.dp)
+                .surfaceColorAtElevation(3.dp)
                 .copy(0.5f)
             )
         ) {
