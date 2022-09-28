@@ -82,17 +82,12 @@ fun ControlsHeader(
       )
     }
 
-    Box(modifier = Modifier
-      .weight(0.1f)
-      .align(Alignment.CenterVertically)
-    ) {
+    Box(modifier = Modifier.weight(0.1f).align(Alignment.CenterVertically)) {
       Icon(
         imageVector = Icons.Rounded.Favorite,
         contentDescription = "",
         tint = monet.onSecondaryContainer.copy(0.85f),
-        modifier = Modifier
-          .padding(end = 12.dp)
-          .size(26.dp)
+        modifier = Modifier.padding(end = 12.dp).size(26.dp)
       )
     }
   }
@@ -137,9 +132,7 @@ fun ControlsSeekbar(viewModel: NowPlayingViewModel) {
     )
 
     Column(
-      modifier = Modifier
-        .padding(horizontal = 13.dp)
-        .fillMaxWidth(),
+      modifier = Modifier.padding(horizontal = 13.dp).fillMaxWidth(),
       horizontalAlignment = Alignment.End,
       verticalArrangement = Arrangement.Bottom
     ) {
@@ -173,9 +166,7 @@ fun ControlsMainButtons(
   Row(
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically,
-    modifier = Modifier
-      .fillMaxWidth()
-      .padding(horizontal = 16.dp)
+    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
   ) {
     IconButton(
       onClick = { /*TODO*/ },
@@ -223,9 +214,7 @@ fun ControlsMainButtons(
         PlayPauseButton(
           isPlaying = viewModel.currentState.value == SpPlayerServiceManager.PlaybackState.Playing,
           color = monet.onSecondaryContainer.copy(0.85f) /* if (viewModel.currentBgColor.value != Color.Transparent) viewModel.currentBgColor.value else Color.Black*/,
-          modifier = Modifier
-            .size(64.dp)
-            .align(Alignment.CenterVertically)
+          modifier = Modifier.size(64.dp).align(Alignment.CenterVertically)
         )
       }
 
@@ -249,9 +238,7 @@ fun ControlsMainButtons(
 
     IconButton(
       onClick = { /*TODO*/ },
-      modifier = Modifier
-        .size(32.dp)
-        .clip(CircleShape),
+      modifier = Modifier.size(32.dp).clip(CircleShape),
       colors = IconButtonDefaults.iconButtonColors(
         contentColor = monet.onSecondaryContainer.copy(0.85f)
       )
@@ -273,33 +260,19 @@ fun ControlsBottomAccessories(
 ) {
   val hasLyrics = viewModel.spLyricsController.currentLyricsLines.size> 0
 
+  val cardAlpha by animateFloatAsState(if (hasLyrics) 1f else 0f)
+  val cardShape by animateDpAsState(if (isLyricsFullscreen) 0.dp else 128.dp, spring(damping, stiffness))
+  val sideButtonsSize by animateDpAsState(if (isLyricsFullscreen) 0.dp else 56.dp, spring(damping, stiffness))
+  val horizontalPadding by animateDpAsState(if (isLyricsFullscreen) 0.dp else 8.dp, spring(damping, stiffness))
+
   Row(
-    modifier = Modifier
-      .padding(
-        horizontal = max(
-          animateDpAsState(
-            if (isLyricsFullscreen) 0.dp else 8.dp,
-            spring(damping, stiffness)
-          ).value,
-          0.dp
-        )
-      )
-      .padding(
-        bottom = max(
-          animateDpAsState(
-            if (isLyricsFullscreen) 0.dp else 16.dp,
-            spring(damping, stiffness)
-          ).value,
-          0.dp
-        )
-      )
-      .fillMaxWidth(),
+    modifier = Modifier.padding(horizontal = max(horizontalPadding, 0.dp)).fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically
   ) {
     IconButton(
       onClick = { /*TODO*/ },
-      modifier = Modifier.size(animateDpAsState(if (isLyricsFullscreen) 0.dp else 56.dp, spring(damping, stiffness)).value),
+      modifier = Modifier.size(sideButtonsSize),
       colors = IconButtonDefaults.iconButtonColors(
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(0.85f)
       )
@@ -310,39 +283,22 @@ fun ControlsBottomAccessories(
         modifier = Modifier
           .size(32.dp)
           .clip(CircleShape)
-          .background(
-            monet.primaryContainer
-              .blendWith(monet.primary, 0.3f)
-              .copy(0.5f)
-          )
+          .background(monet.primaryContainer.blendWith(monet.primary, 0.3f).copy(0.5f))
           .padding(6.dp)
       )
     }
 
-    animateFloatAsState(if (hasLyrics) 1f else 0f).value.let { value ->
-      Card(
-        modifier = Modifier
-          .weight(1f)
-          .alpha(value),
-        shape = RoundedCornerShape(
-          if (hasLyrics)
-            max(
-              0.dp,
-              animateDpAsState(if (isLyricsFullscreen) 0.dp else 128.dp, spring(damping, stiffness)).value
-            )
-          else
-            0.dp
-        )
-      ) {
-        if (hasLyrics)
-          NowPlayingLyricsComposition(viewModel, isLyricsFullscreen, damping, stiffness) { lyricsClickAction() }
-      }
+    Card(
+      modifier = Modifier.weight(1f).alpha(cardAlpha),
+      shape = RoundedCornerShape(if (hasLyrics) max(0.dp, cardShape) else 0.dp)
+    ) {
+      if (hasLyrics)
+        NowPlayingLyricsComposition(viewModel, isLyricsFullscreen, damping, stiffness) { lyricsClickAction() }
     }
-
 
     IconButton(
       onClick = { setQueueOpened(!queueOpened) },
-      modifier = Modifier.size(animateDpAsState(if (isLyricsFullscreen) 0.dp else 56.dp, spring(damping, stiffness)).value ),
+      modifier = Modifier.size(sideButtonsSize),
       colors = IconButtonDefaults.iconButtonColors(
         contentColor = monet.onSecondaryContainer.copy(0.85f)
       )
@@ -358,30 +314,22 @@ fun ControlsBottomAccessories(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ArtworkPager(viewModel: NowPlayingViewModel, pagerState: PagerState, bsOffset: Float) {
-  HorizontalPager(
-    count = viewModel.currentQueue.value.size,
-    state = pagerState,
-    modifier = Modifier
-      .fillMaxWidth()
-  ) { page ->
-    val artworkModifier = Modifier
-      .fillMaxSize(0.9f)
-      .aspectRatio(1f)
-      .clip(RoundedCornerShape(animateDpAsState((8 + (24f * bsOffset)).dp).value))
-
+fun ArtworkPager(
+  viewModel: NowPlayingViewModel,
+  pagerState: PagerState,
+  bsOffset: Float,
+  modifier: Modifier = Modifier
+) {
+  HorizontalPager(count = viewModel.currentQueue.value.size, state = pagerState) { page ->
     if (page == viewModel.currentQueuePosition.value && viewModel.currentTrack.value.artworkCompose != null) {
       Image(
         viewModel.currentTrack.value.artworkCompose!!,
         contentDescription = null,
-        modifier = artworkModifier,
+        modifier = modifier,
         contentScale = ContentScale.Crop
       )
     } else {
-      NowPlayingBackgroundItem(
-        track = viewModel.currentQueue.value[page],
-        modifier = artworkModifier
-      )
+      NowPlayingBackgroundItem(track = viewModel.currentQueue.value[page], modifier = modifier)
     }
   }
 }

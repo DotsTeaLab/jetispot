@@ -85,17 +85,11 @@ fun BaseConfigScreen(
         .padding(padding)) {
       items(viewModel.provideConfigList()) { item ->
         when (item) {
-          is ConfigItem.Category -> {
-            ConfigCategory(stringResource(item.title))
-          }
+          is ConfigItem.Category -> { ConfigCategory(stringResource(item.title)) }
 
-          is ConfigItem.Info -> {
-            ConfigInfo(stringResource(item.text))
-          }
+          is ConfigItem.Info -> { ConfigInfo(stringResource(item.text)) }
 
-          is ConfigItem.BlendInfo -> {
-            BlendInfo(stringResource(item.text))
-          }
+          is ConfigItem.BlendInfo -> { BlendInfo(stringResource(item.text)) }
 
           is ConfigItem.Preference -> {
             ConfigPreference(
@@ -148,9 +142,7 @@ fun BaseConfigScreen(
 
 @Composable
 @Stable
-fun ConfigCategory(
-  text: String
-) {
+fun ConfigCategory(text: String) {
   Text(
     text = text,
     color = MaterialTheme.colorScheme.primary,
@@ -161,9 +153,7 @@ fun ConfigCategory(
 
 @Composable
 @Stable
-fun ConfigInfo(
-  text: String
-) {
+fun ConfigInfo(text: String) {
   Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
     Icon(Icons.Rounded.Info, contentDescription = null, Modifier.size(24.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
 
@@ -177,9 +167,7 @@ fun ConfigInfo(
 }
 
 @Composable
-fun BlendInfo(
-  text: String
-) {
+fun BlendInfo(text: String) {
   Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
     Text(
       text = text,
@@ -198,18 +186,8 @@ fun ConfigSwitch(
   value: Boolean,
   onClick: (Boolean) -> Unit
 ) {
-  Row(modifier = Modifier
-    .fillMaxWidth()
-    .clickable {
-      onClick(!value)
-    }
-    .padding(16.dp)) {
-
-    Column(
-      modifier = Modifier
-        .fillMaxWidth(0.85f)
-        .align(Alignment.CenterVertically)
-    ) {
+  Row(modifier = Modifier.fillMaxWidth().clickable { onClick(!value) }.padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxWidth(0.85f).align(Alignment.CenterVertically)) {
       Text(text = title, color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp)
       if (subtitle.isNotEmpty()) Text(
         text = subtitle,
@@ -219,11 +197,7 @@ fun ConfigSwitch(
       )
     }
 
-    Switch(
-      checked = value, onCheckedChange = {}, modifier = Modifier
-        .fillMaxWidth()
-        .align(Alignment.CenterVertically)
-    )
+    Switch(value, {}, Modifier.fillMaxWidth().align(Alignment.CenterVertically))
   }
 }
 
@@ -234,26 +208,28 @@ fun ConfigLargeSwitch(
   value: Boolean,
   onClick: (Boolean) -> Unit
 ) {
-  val color = animateColorAsState(targetValue = if (value) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.5f).compositeOver(MaterialTheme.colorScheme.inverseSurface))
-  Card(colors = CardDefaults.cardColors(containerColor = color.value), shape = RoundedCornerShape(28.dp), onClick = {
-     onClick(!value)
-  }, modifier = Modifier
-    .fillMaxWidth()
-    .padding(horizontal = 16.dp)
-    .padding(bottom = 8.dp)) {
+  val color by animateColorAsState(targetValue = if (value) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.5f).compositeOver(MaterialTheme.colorScheme.inverseSurface))
+  Card(
+    colors = CardDefaults.cardColors(containerColor = color),
+    shape = RoundedCornerShape(28.dp),
+    onClick = { onClick(!value) },
+    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 8.dp)
+  ) {
     Row(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
-      Text(text = title, color = MaterialTheme.colorScheme.inverseOnSurface, fontSize = 20.sp, modifier = Modifier
-        .fillMaxWidth(0.85f)
-        .align(Alignment.CenterVertically))
+      Text(
+        text = title,
+        color = MaterialTheme.colorScheme.inverseOnSurface,
+        fontSize = 20.sp,
+        modifier = Modifier.fillMaxWidth(0.85f).align(Alignment.CenterVertically)
+      )
 
       Switch(
         colors = SwitchDefaults.colors(
           checkedTrackColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
           checkedThumbColor = MaterialTheme.colorScheme.primary,
         ),
-        checked = value, onCheckedChange = {}, modifier = Modifier
-          .fillMaxWidth()
-          .align(Alignment.CenterVertically)
+        checked = value, onCheckedChange = {},
+        modifier = Modifier.fillMaxWidth().align(Alignment.CenterVertically)
       )
     }
   }
@@ -268,15 +244,16 @@ fun ConfigRadio(
   enabled: Boolean = true,
   onClick: () -> Unit
 ) {
-  Row(modifier = Modifier
-    .fillMaxWidth()
-    .clickable(enabled) { onClick() }
-    .padding(vertical = 16.dp, horizontal = 6.dp)) {
-
+  Row(
+    Modifier
+      .fillMaxWidth()
+      .clickable(enabled) { onClick() }
+      .padding(vertical = 16.dp, horizontal = 6.dp)
+  ) {
     RadioButton(selected = value, onClick = { onClick() }, enabled = enabled, modifier = Modifier.align(Alignment.CenterVertically))
 
     Column(
-      modifier = Modifier
+      Modifier
         .padding(start = 16.dp)
         .fillMaxWidth()
         .align(Alignment.CenterVertically)
@@ -299,10 +276,12 @@ fun ConfigPreference(
   subtitle: String = "",
   onClick: () -> Unit
 ) {
-  Column(modifier = Modifier
-    .fillMaxWidth()
-    .clickable { onClick() }
-    .padding(16.dp)) {
+  Column(
+    modifier = Modifier
+      .fillMaxWidth()
+      .clickable { onClick() }
+      .padding(16.dp)
+  ) {
     Text(text = title, color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp)
     if (subtitle.isNotEmpty()) Text(
       text = subtitle,

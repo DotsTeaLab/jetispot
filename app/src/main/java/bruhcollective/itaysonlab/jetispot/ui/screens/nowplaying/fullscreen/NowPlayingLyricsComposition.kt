@@ -19,6 +19,7 @@ import androidx.compose.material.icons.rounded.MenuBook
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,22 +49,21 @@ fun NowPlayingLyricsComposition(
   lyricsClickAction: () -> Unit
 ) {
   val listState = rememberLazyListState()
-  val screenHeight =
-    LocalConfiguration.current.screenHeightDp.dp +
-            WindowInsets.statusBars.asPaddingValues().calculateTopPadding() +
-            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 1.dp
+  val screenHeight = LocalConfiguration.current.screenHeightDp.dp +
+          WindowInsets.statusBars.asPaddingValues().calculateTopPadding() +
+          WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 1.dp
 
   LazyColumn {
     item {
+      val fullscreenHeight by animateDpAsState(
+        if (isTextFullscreen) screenHeight else 0.dp, spring(damping, stiffness)
+      )
+
       LyricsCollapsed(viewModel, isTextFullscreen, damping, stiffness, lyricsClickAction)
 
       Column(
         Modifier
-          .height(
-            animateDpAsState(
-              if (isTextFullscreen) screenHeight else 0.dp, spring(damping, stiffness)
-            ).value
-          )
+          .height(fullscreenHeight)
           .padding(horizontal = 12.dp)
           .systemBarsPadding()
           .fillMaxWidth()
@@ -84,6 +84,10 @@ fun NowPlayingLyricsComposition(
 
 @Composable
 fun LyricsGradientsFullscreen(lyricsScrollBehavior: LazyListState) {
+  val gradientAlpha by animateFloatAsState(
+    if (lyricsScrollBehavior.firstVisibleItemIndex != 0) 1f else 0f
+  )
+
   Box(Modifier.fillMaxSize()) {
     Box(
       modifier = Modifier
@@ -91,17 +95,14 @@ fun LyricsGradientsFullscreen(lyricsScrollBehavior: LazyListState) {
         .fillMaxWidth()
         .background(
           Brush.verticalGradient(
-            animateFloatAsState(
-              if (lyricsScrollBehavior.firstVisibleItemIndex != 0) 1f else 0f
-            ).value.let { value ->
-              listOf(
-                MaterialTheme.colorScheme.surfaceVariant.copy(value),
-                Color.Transparent
-              )
-            }
+            listOf(
+              MaterialTheme.colorScheme.surfaceVariant.copy(gradientAlpha),
+              Color.Transparent
+            )
           )
         )
     )
+
     Box(
       modifier = Modifier
         .fillMaxHeight(0.1f)
@@ -125,15 +126,13 @@ fun LyricsControls(
   viewModel: NowPlayingViewModel,
   damping: Float, stiffness: Float
 ) {
+  val controlsHeight by animateDpAsState(
+    if (isTextFullscreen) 108.dp else 0.dp,
+    spring(damping * 1.3f, stiffness)
+  )
+
   Row(
-    Modifier
-      .height(
-        animateDpAsState(
-          if (isTextFullscreen) 108.dp else 0.dp,
-          spring(damping * 1.3f, stiffness)
-        ).value
-      )
-      .fillMaxWidth(),
+    Modifier.height(controlsHeight).fillMaxWidth(),
     horizontalArrangement = Arrangement.Center,
     verticalAlignment = Alignment.CenterVertically
   ) {
@@ -152,9 +151,7 @@ fun LyricsControls(
       PlayPauseButton(
         isPlaying = viewModel.currentState.value == SpPlayerServiceManager.PlaybackState.Playing,
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier
-          .size(64.dp)
-          .align(Alignment.CenterVertically)
+        modifier = Modifier.size(64.dp).align(Alignment.CenterVertically)
       )
     }
   }
@@ -168,29 +165,25 @@ fun LyricsCollapsed(
   stiffness: Float,
   lyricsClickAction: () -> Unit
 ) {
+  val collapsedHeight by animateDpAsState(
+    if (isTextFullscreen) 0.dp else 56.dp,
+    spring(damping, stiffness)
+  )
+
   Row(
     modifier = Modifier
       .clickable(remember { MutableInteractionSource() }, null) { lyricsClickAction() }
-      .height(
-        animateDpAsState(
-          if (isTextFullscreen) 0.dp else 56.dp,
-          spring(damping, stiffness)
-        ).value
-      ),
+      .height(collapsedHeight),
     verticalAlignment = Alignment.CenterVertically
   ) {
     Icon(
       Icons.Rounded.MenuBook,
       contentDescription = "",
-      modifier = Modifier
-        .padding(start = 16.dp)
-        .size(16.dp)
+      modifier = Modifier.padding(start = 16.dp).size(16.dp)
     )
 
     Column(
-      Modifier
-        .weight(1f)
-        .height(64.dp),
+      Modifier.weight(1f).height(64.dp),
       verticalArrangement = Arrangement.Center
     ) {
       Text(
@@ -201,9 +194,7 @@ fun LyricsCollapsed(
         maxLines = 3,
         textAlign = TextAlign.Center,
         overflow = TextOverflow.Ellipsis,
-        modifier = Modifier
-          .align(Alignment.CenterHorizontally)
-          .padding(horizontal = 8.dp)
+        modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 8.dp)
       )
     }
 
@@ -243,16 +234,11 @@ private fun LyricsHeader(viewModel: NowPlayingViewModel, lyricsClickAction: () -
       Icon(
         Icons.Rounded.ExpandMore,
         contentDescription = "Close",
-        modifier = Modifier
-          .size(35.dp)
-          .alpha(0.7f)
+        modifier = Modifier.size(35.dp).alpha(0.7f)
       )
     }
     Column(
-      Modifier
-        .fillMaxWidth()
-        .height(64.dp)
-        .padding(horizontal = 48.dp),
+      Modifier.fillMaxWidth().height(64.dp).padding(horizontal = 48.dp),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center
     ) {
@@ -264,9 +250,7 @@ private fun LyricsHeader(viewModel: NowPlayingViewModel, lyricsClickAction: () -
         fontSize = 18.sp,
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Medium,
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(top = 8.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
         basicGradientColor = MaterialTheme.colorScheme.surfaceVariant
       )
 
@@ -278,9 +262,7 @@ private fun LyricsHeader(viewModel: NowPlayingViewModel, lyricsClickAction: () -
         fontSize = 14.sp,
         textAlign = TextAlign.Center,
         basicGradientColor = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier
-          .padding(top = 2.dp)
-          .fillMaxWidth()
+        modifier = Modifier.padding(top = 2.dp).fillMaxWidth()
       )
     }
   }

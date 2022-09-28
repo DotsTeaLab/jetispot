@@ -14,6 +14,7 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +45,10 @@ fun HubScaffold(
   val scope = rememberCoroutineScope()
   val topBarState = rememberEUCScrollBehavior()
 
+  val fabPadding by animateDpAsState(
+    if (topBarState.state.collapsedFraction <= 0.02f) 16.dp else 0.dp,
+    animationSpec = tween(durationMillis = 500)
+  )
 
   when (state) {
     is HubState.Loaded -> {
@@ -101,12 +106,7 @@ fun HubScaffold(
             Box(
               modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(
-                  animateDpAsState(
-                    if (topBarState.state.collapsedFraction <= 0.02f) 16.dp else 0.dp,
-                    animationSpec = tween(durationMillis = 500)
-                  ).value
-                )
+                .padding(fabPadding)
             ) {
               state.data.apply {
                 state.data.header?.let {

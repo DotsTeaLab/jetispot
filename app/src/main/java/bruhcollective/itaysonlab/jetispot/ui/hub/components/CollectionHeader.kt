@@ -1,6 +1,6 @@
 package bruhcollective.itaysonlab.jetispot.ui.hub.components
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -35,6 +35,7 @@ fun CollectionHeader(
   val scope = rememberCoroutineScope()
   var expandSortDropdown by remember { mutableStateOf(false) }
   val delegate = LocalHubScreenDelegate.current
+  val chipsHeight by animateDpAsState(32.dp * (1f - scrollBehavior.state.collapsedFraction))
 
   LargeTopAppBar(
     title = { Text("Liked Songs") },
@@ -180,7 +181,7 @@ fun CollectionHeader(
 
     LazyRow(
       modifier = Modifier
-        .height(animateFloatAsState(32 * (1f - scrollBehavior.state.collapsedFraction)).value.dp)
+        .height(chipsHeight)
         .padding(bottom = 0.dp),
       contentPadding = PaddingValues(horizontal = 16.dp),
       horizontalArrangement = Arrangement.spacedBy(8.dp)

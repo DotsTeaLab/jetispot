@@ -1,6 +1,6 @@
 package bruhcollective.itaysonlab.jetispot.ui.screens.yourlibrary2
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -53,6 +53,8 @@ fun YourLibraryContainerScreen(
   val Grid = remember { mutableStateOf(false) }
   Grid.value = UseGrid!!
 
+  val chipHeight by animateDpAsState(32.dp * (1f - scrollBehavior.state.collapsedFraction))
+
   LaunchedEffect(Unit) {
     launch {
       viewModel.load()
@@ -83,9 +85,7 @@ fun YourLibraryContainerScreen(
         )
 
         Row(
-          modifier = Modifier
-            .fillMaxWidth()
-            .height(animateFloatAsState(32 * (1f - scrollBehavior.state.collapsedFraction)).value.dp),
+          modifier = Modifier.fillMaxWidth().height(chipHeight),
           horizontalArrangement = Arrangement.SpaceBetween
         ) {
           Box(Modifier.width(295.dp)){
@@ -197,11 +197,7 @@ fun YourLibraryContainerScreen(
         }
        }
     } else {
-      PagingLoadingPage(
-        modifier = Modifier
-          .padding(padding)
-          .fillMaxSize()
-      )
+      PagingLoadingPage(modifier = Modifier.padding(padding).fillMaxSize())
     }
   }
 }

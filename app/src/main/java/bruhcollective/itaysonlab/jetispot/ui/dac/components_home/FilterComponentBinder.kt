@@ -1,6 +1,6 @@
 package bruhcollective.itaysonlab.jetispot.ui.dac.components_home
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.spotify.home.dac.component.experimental.v1.proto.FilterComponent
@@ -22,14 +23,13 @@ fun FilterComponentBinder (
   selectedFacet: String,
   selectFacet: (String) -> Unit
 ) {
+  val height by  animateDpAsState(
+    32.dp * (1f - scrollBehavior.state.collapsedFraction)
+  )
   LazyRow(
     Modifier
       .padding(start = 16.dp, bottom = 16.dp)
-      .height(
-        animateFloatAsState(
-          32 * (1f - scrollBehavior.state.collapsedFraction)
-        ).value.dp
-      ),
+      .height(height),
     horizontalArrangement = Arrangement.spacedBy(8.dp)) {
     items(component.facetsList) { item ->
       val selected = selectedFacet == item.value

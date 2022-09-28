@@ -2,8 +2,10 @@ package bruhcollective.itaysonlab.jetispot.ui.shared
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -37,13 +39,13 @@ fun PlayPauseButton (
   val state = remember { PlayPauseButtonState(isPlaying) }
   val dimens = remember { PlayPauseButtonDimens() }
 
-  val progressAnimator = animateFloatAsState(
+  val progressAnimator by animateFloatAsState(
     targetValue = if (!isPlaying) 1f else 0f,
     finishedListener = { state.isFinallyPlay.value = it == 1f }
   )
 
   Canvas(modifier) {
-    val progress = progressAnimator.value
+    val progress = progressAnimator
     val pauseBarDistance = dimens.distance.toPx()
     val pauseBarWidth = dimens.width.toPx()
     val pauseBarHeight = dimens.height.toPx()

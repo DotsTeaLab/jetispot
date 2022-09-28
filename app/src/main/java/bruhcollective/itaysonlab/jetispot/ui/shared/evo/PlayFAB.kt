@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import bruhcollective.itaysonlab.jetispot.core.objs.hub.HubEvent
 import bruhcollective.itaysonlab.jetispot.core.objs.hub.HubItem
 import bruhcollective.itaysonlab.jetispot.ui.ext.compositeSurfaceElevation
-import bruhcollective.itaysonlab.jetispot.ui.hub.HubScreenDelegate
 import bruhcollective.itaysonlab.jetispot.ui.hub.LocalHubScreenDelegate
 import bruhcollective.itaysonlab.jetispot.ui.hub.clickableHub
 
@@ -36,30 +36,27 @@ fun PlayFAB(
 ) {
   val delegate = LocalHubScreenDelegate.current
 
-  val fabSize = animateDpAsState(
+  val fabSize by animateDpAsState(
     if (scrollBehavior.state.collapsedFraction <= 0.02f) 56.dp else 0.dp,
     animationSpec = tween(durationMillis = 500)
-  ).value
+  )
+
   Box {
     item.children?.get(0)?.let {
-        Modifier
-          .clip(RoundedCornerShape(16.dp))
-          .size(fabSize)
-          .background(MaterialTheme.colorScheme.primaryContainer)
-          .clickableHub(it)
+      Modifier
+        .clip(RoundedCornerShape(16.dp))
+        .size(fabSize)
+        .background(MaterialTheme.colorScheme.primaryContainer)
+        .clickableHub(it)
     }?.let {
-      Box(
-        it
-    ) {
+      Box(it) {
         Icon(
           imageVector = Icons.Rounded.PlayArrow,
           tint = MaterialTheme.colorScheme.onPrimaryContainer,
           contentDescription = null,
-          modifier = Modifier
-            .size(32.dp)
-            .align(Alignment.Center)
+          modifier = Modifier.size(32.dp).align(Alignment.Center)
         )
-    }
+      }
     }
 
     if ((item.children?.get(0)?.events?.click as? HubEvent.PlayFromContext)?.data?.player?.options?.player_options_override?.shuffling_context != false) {

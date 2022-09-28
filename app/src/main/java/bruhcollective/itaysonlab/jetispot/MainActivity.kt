@@ -197,7 +197,11 @@ class MainActivity : ComponentActivity() {
                  }
                }
             ) { innerPadding ->
-              BottomSheetScaffold(
+               val sheetPeekHeight by animateDpAsState(
+                 if (bsVisible) 80.dp + 64.dp + navBarHeightDp else 0.dp
+               )
+
+               BottomSheetScaffold(
                 sheetContent = {
                   NowPlayingScreen(
                     bottomSheetState = bsState.bottomSheetState,
@@ -211,30 +215,27 @@ class MainActivity : ComponentActivity() {
                   if (bsOffset() < 0.9f) bsLyricsOpened = false
                 },
                 scaffoldState = bsState,
-                sheetPeekHeight = animateDpAsState(
-                  if (bsVisible) 80.dp + 64.dp + navBarHeightDp else 0.dp
-                ).value,
+                sheetPeekHeight = sheetPeekHeight,
                 backgroundColor = MaterialTheme.colorScheme.surface,
                 sheetGesturesEnabled = !bsQueueOpened
               ) { innerScaffoldPadding ->
-                animateFloatAsState(1f - bsOffset() * 0.1f, spring()).value.let { zoom ->
-                  animateFloatAsState(64 * bsOffset(), spring()).value.dp.let { blur ->
-                    AppNavigation(
-                      navController = navController,
-                      sessionManager = sessionManager,
-                      authManager = authManager,
-                      bsVisible = bsVisible,
-                      modifier = Modifier
-                        .blur(blur)
-                        .graphicsLayer {
-                          scaleX = zoom
-                          scaleY = zoom
-                        }
-                        .padding(innerScaffoldPadding)
-                        .padding(bottom = if (bsVisible) 0.dp else 80.dp)
-                    )
-                  }
-                }
+                val zoom by animateFloatAsState(1f - bsOffset() * 0.1f, spring())
+                val blur by animateDpAsState(64.dp * bsOffset(), spring())
+
+                AppNavigation(
+                  navController = navController,
+                  sessionManager = sessionManager,
+                  authManager = authManager,
+                  bsVisible = bsVisible,
+                  modifier = Modifier
+                    .blur(blur)
+                    .graphicsLayer {
+                      scaleX = zoom
+                      scaleY = zoom
+                    }
+                    .padding(innerScaffoldPadding)
+                    .padding(bottom = if (bsVisible) 0.dp else 80.dp)
+                )
               }
             }
           }
