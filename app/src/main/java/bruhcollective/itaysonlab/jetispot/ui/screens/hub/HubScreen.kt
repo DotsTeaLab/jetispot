@@ -51,6 +51,7 @@ fun HubScreen(
   when (viewModel.state) {
     is HubScreenViewModel.State.Loaded -> {
       ImageTopAppBar({}, {}, {}, Modifier.height(0.dp), scrollBehavior = scrollBehavior, maxHeight = 64.01.dp)
+
       CompositionLocalProvider(LocalHubScreenDelegate provides viewModel) {
         Column(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
           (viewModel.state as HubScreenViewModel.State.Loaded).data.apply {
