@@ -73,12 +73,12 @@ fun YourLibraryContainerScreen(
               Icon(
                 Icons.Rounded.AccountCircle,
                 null,
-                modifier = Modifier.size(32.dp).padding(top = 2.dp)
+                modifier = Modifier.size(28.dp)
               )
             }
           },
           actions = {
-            IconButton(onClick = { /* TODO */ }) {
+            IconButton(onClick = { navController.navigate("spotify:config") }) {
               Icon(Icons.Rounded.Search, null)
             }
           }
