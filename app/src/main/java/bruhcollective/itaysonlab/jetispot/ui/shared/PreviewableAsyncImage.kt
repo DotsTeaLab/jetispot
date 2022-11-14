@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.Icon
@@ -29,6 +30,33 @@ fun PreviewableAsyncImage (
     Box(modifier) {
       ImagePreview(placeholderType, modifier)
     }
+  } else {
+    val painter = rememberAsyncImagePainter(model = imageUrl, contentScale = ContentScale.Crop)
+    val isLoaded = painter.state is AsyncImagePainter.State.Success
+
+    if (isLoaded) {
+      Image(painter = painter, contentDescription = null, contentScale = ContentScale.Crop, modifier = modifier)
+    } else {
+      Box(modifier) {
+        ImagePreview(placeholderType, Modifier.fillMaxSize())
+        Image(painter = painter, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+      }
+    }
+  }
+}
+
+@Composable
+fun PreviewableAsyncProfilePicture (
+  imageUrl: String?,
+  placeholderType: String?,
+  modifier: Modifier
+) {
+  if (imageUrl.isNullOrEmpty() || imageUrl == "https://i.scdn.co/image/") {
+    Icon(
+      Icons.Rounded.AccountCircle,
+      null,
+      modifier = modifier
+    )
   } else {
     val painter = rememberAsyncImagePainter(model = imageUrl, contentScale = ContentScale.Crop)
     val isLoaded = painter.state is AsyncImagePainter.State.Success
@@ -91,6 +119,6 @@ private fun placeholderToIcon (type: String?) = when (type) {
   "album" -> Icons.Rounded.Album
   "podcasts" -> Icons.Rounded.Podcasts
   "playlist" -> Icons.Rounded.PlaylistPlay
-  "user" -> Icons.Rounded.Person
+  "user" -> Icons.Rounded.AccountCircle
   else -> Icons.Rounded.Audiotrack
 }

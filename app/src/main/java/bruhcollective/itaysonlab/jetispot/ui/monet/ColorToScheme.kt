@@ -46,3 +46,4 @@ object ColorToScheme {
 }
 
 fun Int.color() = Color(this)
+
