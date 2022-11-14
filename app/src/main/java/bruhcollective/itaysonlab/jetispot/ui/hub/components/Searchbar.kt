@@ -13,28 +13,21 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.IntOffset
 import bruhcollective.itaysonlab.jetispot.ui.screens.search.SearchViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
 @Composable
-fun Searchbar(modifier: Modifier = Modifier, viewModel: SearchViewModel, virtualPagerState: PagerState) {
-  val focusManager = LocalFocusManager.current
-
-  val clearFunc: () -> Unit = {
-    viewModel.launch {
-      focusManager.clearFocus()
-      virtualPagerState.scrollToPage(0)
-      viewModel.clear()
-    }
-  }
-
+fun Searchbar(
+  modifier: Modifier = Modifier,
+  viewModel: SearchViewModel, virtualPagerState: PagerState,
+  clearFunc: () -> Unit,
+  enterFunc: () -> Unit
+) {
   TextField(
     value = viewModel.searchQuery,
     onValueChange = { viewModel.searchQuery = it },
@@ -45,9 +38,7 @@ fun Searchbar(modifier: Modifier = Modifier, viewModel: SearchViewModel, virtual
         Text(text = "What would you like to listen?")
       }
     },
-    leadingIcon = {
-      Icon(imageVector = Icons.Rounded.Search, contentDescription = null)
-    },
+    leadingIcon = { Icon(imageVector = Icons.Rounded.Search, contentDescription = null) },
     trailingIcon = {
       AnimatedVisibility(
         visible = viewModel.searchQuery.text.isNotEmpty(),
@@ -69,14 +60,6 @@ fun Searchbar(modifier: Modifier = Modifier, viewModel: SearchViewModel, virtual
     ),
     singleLine = true,
     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-    keyboardActions = KeyboardActions(
-      onSearch = {
-        viewModel.launch {
-          focusManager.clearFocus()
-          virtualPagerState.scrollToPage(1)
-          viewModel.initiateSearch()
-        }
-      }
-    )
+    keyboardActions = KeyboardActions(onSearch = { enterFunc() })
   )
 }

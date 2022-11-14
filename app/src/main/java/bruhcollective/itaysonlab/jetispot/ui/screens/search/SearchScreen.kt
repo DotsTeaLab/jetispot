@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import bruhcollective.itaysonlab.jetispot.core.api.SpInternalApi
@@ -23,53 +24,66 @@ import bruhcollective.itaysonlab.jetispot.ui.blocks.TwoColumnAndImageBlock
 import bruhcollective.itaysonlab.jetispot.ui.hub.components.Searchbar
 import bruhcollective.itaysonlab.jetispot.ui.navigation.LocalNavigationController
 import bruhcollective.itaysonlab.jetispot.ui.screens.hub.HubScreen
-import bruhcollective.itaysonlab.jetispot.ui.shared.EmptyWindowInsets
 import bruhcollective.itaysonlab.jetispot.ui.shared.PagingInfoPage
 import bruhcollective.itaysonlab.jetispot.ui.shared.PagingLoadingPage
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
 @OptIn(
   ExperimentalMaterial3Api::class, ExperimentalPagerApi::class, ExperimentalFoundationApi::class
 )
 @Composable
-fun SearchScreen(
-  viewModel: SearchViewModel = hiltViewModel()
-) {
+fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
   val navController = LocalNavigationController.current
-  val virtualPagerState = rememberPagerState()
+  val virtualPagerState = rememberPagerState(0)
+  val focusManager = LocalFocusManager.current
+
+  fun clearFunc() {
+    viewModel.launch {
+      focusManager.clearFocus()
+      virtualPagerState.animateScrollToPage(0)
+      viewModel.clear()
+    }
+  }
+
+  fun enterFunc() {
+    viewModel.launch {
+      focusManager.clearFocus()
+      virtualPagerState.animateScrollToPage(1)
+      viewModel.initiateSearch()
+    }
+  }
 
   Scaffold(
     topBar = {
       Searchbar(
-        Modifier
-          .statusBarsPadding()
-          .padding(16.dp)
-          .fillMaxWidth()
-          .focusTarget(),
+        Modifier.statusBarsPadding().padding(16.dp).fillMaxWidth().focusTarget(),
         viewModel,
-        virtualPagerState
+        virtualPagerState,
+        { clearFunc() },
+        { enterFunc() }
       )
     },
-    contentWindowInsets = EmptyWindowInsets
   ) { padding ->
-    HorizontalPager(
+    VerticalPager(
       count = 2,
       state = virtualPagerState,
       userScrollEnabled = false,
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(padding)
+      modifier = Modifier.fillMaxSize().padding(padding)
     ) { idx ->
       when (idx) {
         0 -> HubScreen(loader = SpInternalApi::getBrowseView)
-        1 -> SearchBinder(viewModel.searchResponse, onClick = { type, uri ->
-          when (type) {
-            SearchEntity.EntityCase.TRACK -> viewModel.dispatchPlay(uri)
-            else -> navController.navigate(uri)
+        1 -> SearchBinder(
+          viewModel.searchResponse,
+          onClick = { type, uri ->
+            when (type) {
+              SearchEntity.EntityCase.TRACK -> viewModel.dispatchPlay(uri)
+              else -> navController.navigate(uri)
+            }
           }
-        })
+        )
       }
     }
   }
