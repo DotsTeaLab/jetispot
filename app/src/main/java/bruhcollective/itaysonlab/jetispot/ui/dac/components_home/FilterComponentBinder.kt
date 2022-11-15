@@ -3,7 +3,6 @@ package bruhcollective.itaysonlab.jetispot.ui.dac.components_home
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -23,13 +22,11 @@ fun FilterComponentBinder (
   selectedFacet: String,
   selectFacet: (String) -> Unit
 ) {
-  val height by  animateDpAsState(
+  val height by animateDpAsState(
     32.dp * (1f - scrollBehavior.state.collapsedFraction)
   )
   LazyRow(
-    Modifier
-      .padding(start = 16.dp, bottom = 16.dp)
-      .height(height),
+    Modifier.height(height),
     horizontalArrangement = Arrangement.spacedBy(8.dp)) {
     items(component.facetsList) { item ->
       val selected = selectedFacet == item.value

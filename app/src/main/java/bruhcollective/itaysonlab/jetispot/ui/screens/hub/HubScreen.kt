@@ -67,7 +67,7 @@ fun HubScreen(
             LazyVerticalGrid(
               contentPadding = PaddingValues(if (needContentPadding) 16.dp else 0.dp),
               verticalArrangement = Arrangement.spacedBy(if (needContentPadding) 12.dp else 0.dp),
-              horizontalArrangement = Arrangement.spacedBy(if (needContentPadding) 12.dp else 0.dp),
+              horizontalArrangement = Arrangement.spacedBy(if (needContentPadding) 8.dp else 0.dp),
               columns = GridCells.Fixed(2),
               modifier = Modifier.fillMaxSize()
             ) {

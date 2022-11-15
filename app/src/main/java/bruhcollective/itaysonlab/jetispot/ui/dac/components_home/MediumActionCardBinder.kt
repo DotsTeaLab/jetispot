@@ -71,7 +71,6 @@ private fun EmptySubtitleCard(
   OutlinedCard(
     shape = RoundedCornerShape(32.dp),
     modifier = Modifier
-      .padding(horizontal = 16.dp)
       .fillMaxWidth()
       .navClickable { navController -> navController.navigate(navigateUri) }
   ) {
@@ -151,7 +150,6 @@ private fun NormalCard(
   OutlinedCard(
     shape = RoundedCornerShape(32.dp),
     modifier = Modifier
-      .padding(horizontal = 16.dp)
       .fillMaxWidth()
       .navClickable { navController -> navController.navigate(navigateUri) }
   ) {

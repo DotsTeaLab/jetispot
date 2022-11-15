@@ -47,7 +47,7 @@ fun Carousel(
         fontSize = 24.sp,
         modifier = Modifier
           .padding(horizontal = if (isSurroundedWithPadding) 0.dp else 16.dp)
-          .padding(top = 8.dp, bottom = 12.dp)
+          .padding(bottom = 8.dp)
       )
     }
 
@@ -55,6 +55,7 @@ fun Carousel(
       Modifier
         .wrapContentSize()
         .padding(horizontal = if (isSurroundedWithPadding) 0.dp else 16.dp)
+        .padding(vertical = 8.dp)
         .clip(shape = RoundedCornerShape(34.dp))
     ) {
       Card(
