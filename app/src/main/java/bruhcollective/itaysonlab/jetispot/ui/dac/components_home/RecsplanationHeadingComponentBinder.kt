@@ -6,14 +6,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bruhcollective.itaysonlab.jetispot.ui.navigation.LocalNavigationController
@@ -49,7 +44,10 @@ fun RecsplanationHeadingComponentBinder(item: RecsplanationHeadingComponent) {
           .clip(CircleShape)
       )
 
-      Column(Modifier.padding(horizontal = 12.dp).align(Alignment.CenterVertically)) {
+      Column(
+        Modifier
+          .padding(horizontal = 12.dp)
+          .align(Alignment.CenterVertically)) {
         Text(item.subtitle.uppercase(), fontSize = 12.sp)
         MediumText(item.title, modifier = Modifier.padding(top = 0.dp), fontSize = 18.sp)
       }
@@ -59,37 +57,38 @@ fun RecsplanationHeadingComponentBinder(item: RecsplanationHeadingComponent) {
 
 @Composable
 fun RecsplanationHeadingSingleTextComponentBinder(item: RecsplanationHeadingSingleTextComponent) {
-  val text = remember(item.highlightedText) {
-    val first = item.highlightedText.text.take(item.highlightedText.startInclusive)
-    val second = item.highlightedText.text.substring(item.highlightedText.startInclusive, item.highlightedText.endExclusive)
-    val third = item.highlightedText.text.takeLast(abs(item.highlightedText.text.length - (first.length + second.length)))
-
-    buildAnnotatedString {
-      append(first)
-      withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
-        append(second)
-      }
-      append(third)
-    }
-  }
+  // text before second
+  val first = item.highlightedText.text.take(item.highlightedText.startInclusive)
+  // artist or playlist name
+  val second = item.highlightedText.text.substring(item.highlightedText.startInclusive, item.highlightedText.endExclusive)
+  // third is displayed when first and second arent being displayed
+  val third = item.highlightedText.text.takeLast(abs(item.highlightedText.text.length - (first.length + second.length)))
 
   Row(
     Modifier
       .padding(top = 8.dp)
-      .fillMaxWidth()
+      .clip(CircleShape)
       .navClickable { navController -> navController.navigate(item.navigateUri) },
-    verticalAlignment = Alignment.CenterVertically
   ) {
-    if (item.imageUri.isNotEmpty()) {
-      PreviewableAsyncImage(
-        imageUrl = item.imageUri,
-        placeholderType = "none",
-        modifier = Modifier.size(24.dp).clip(CircleShape)
-      )
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      if (item.imageUri.isNotEmpty()) {
+        PreviewableAsyncImage(
+          imageUrl = item.imageUri,
+          placeholderType = "none",
+          modifier = Modifier
+            .size(36.dp)
+            .clip(CircleShape)
+        )
 
-      Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(8.dp))
+      }
+
+      OutlinedCard(shape = CircleShape) {
+        Text(
+          first + second + third, fontSize = 14.sp,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        )
+      }
     }
-
-    Text(text, fontSize = 16.sp)
   }
 }
