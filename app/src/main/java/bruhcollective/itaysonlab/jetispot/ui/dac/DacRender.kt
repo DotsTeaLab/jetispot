@@ -1,8 +1,8 @@
 package bruhcollective.itaysonlab.jetispot.ui.dac
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -47,7 +47,7 @@ fun DacRender (
     is AlbumCardActionsSmallComponent -> SmallActionCardBinder(title = item.title, subtitle = item.subtitle, navigateUri = item.navigateUri, likeUri = item.likeUri, imageUri = item.imageUri, imagePlaceholder = "album", playCommand = item.playCommand)
     is ArtistCardActionsSmallComponent -> SmallActionCardBinder(title = item.title, subtitle = item.subtitle, navigateUri = item.navigateUri, likeUri = item.followUri, imageUri = item.imageUri, imagePlaceholder = "artist", playCommand = item.playCommand)
     is PlaylistCardActionsSmallComponent -> SmallActionCardBinder(title = item.title, subtitle = item.subtitle, navigateUri = item.navigateUri, likeUri = item.likeUri, imageUri = item.imageUri, imagePlaceholder = "playlist", playCommand = item.playCommand)
-    is AlbumCardActionsMediumComponent -> MediumActionCardBinder(title = item.title, subtitle = item.description, navigateUri = item.navigateUri, likeUri = item.likeUri, imageUri = item.imageUri, imagePlaceholder = "album", playCommand = item.playCommand, contentType = item.contentType, fact = item.conciseFact, gradientColor = item.gradientColor)
+    is AlbumCardActionsMediumComponent -> MediumActionCardBinder(title = item.title, artistName = item.artistName, subtitle = item.description, navigateUri = item.navigateUri, likeUri = item.likeUri, imageUri = item.imageUri, imagePlaceholder = "album", playCommand = item.playCommand, contentType = item.contentType, fact = item.conciseFact, gradientColor = item.gradientColor)
     is ArtistCardActionsMediumComponent -> MediumActionCardBinder(title = item.title, subtitle = item.description, navigateUri = item.navigateUri, likeUri = item.followUri, imageUri = item.imageUri, imagePlaceholder = "artist", playCommand = item.playCommand, contentType = item.contentType, fact = item.conciseFact, gradientColor = item.gradientColor)
     is PlaylistCardActionsMediumComponent -> MediumActionCardBinder(title = item.title, subtitle = item.description, navigateUri = item.navigateUri, likeUri = item.likeUri, imageUri = item.imageUri, imagePlaceholder = "playlist", playCommand = item.playCommand, contentType = item.contentType, fact = item.conciseFact, gradientColor = item.gradientColor)
 
