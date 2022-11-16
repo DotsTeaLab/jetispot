@@ -11,7 +11,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bruhcollective.itaysonlab.jetispot.core.objs.hub.HubText
-import bruhcollective.itaysonlab.jetispot.ui.hub.HubScreenDelegate
 import bruhcollective.itaysonlab.jetispot.ui.hub.LocalHubScreenDelegate
 
 @Composable
@@ -20,10 +19,10 @@ fun SectionHeader(
 ) {
   Box(
     Modifier
-      .padding(top = 22.dp, bottom = 4.dp)
       .padding(
         horizontal = if (LocalHubScreenDelegate.current.isSurroundedWithPadding()) 0.dp else 16.dp
       )
+      .padding(bottom = 8.dp)
   ) {
     Text(
       text = text.title!!,

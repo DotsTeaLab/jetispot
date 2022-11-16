@@ -180,7 +180,7 @@ fun MarqueeText(
     }
 
     layout(
-      width = constraints.maxWidth,
+      width = if (mainText.width > constraints.maxWidth) constraints.maxWidth else mainText.width,
       height = mainText.height
     ) {
       mainText.place(offset, 0)

@@ -41,7 +41,6 @@ fun SmallActionCardBinder(
   Card(
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
     modifier = Modifier
-      .padding(horizontal = 16.dp)
       .height(128.dp)
       .fillMaxWidth()
       .clip(RoundedCornerShape(32.dp))

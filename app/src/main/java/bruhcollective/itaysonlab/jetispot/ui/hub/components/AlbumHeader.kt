@@ -1,8 +1,8 @@
 package bruhcollective.itaysonlab.jetispot.ui.hub.components
 
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,10 @@ fun AlbumHeader(
 ) {
   val navController = LocalNavigationController.current
   val delegate = LocalHubScreenDelegate.current
-  val artistScrollState = rememberLazyListState()
+
+  fun actionStripHeight() = (88 * (1f - scrollBehavior.state.collapsedFraction)).dp
+
+  fun actionStripAlpha() = CubicBezierEasing(.8f, 0f, .8f, .15f).transform(1f - scrollBehavior.state.collapsedFraction)
 
   Column() {
     ImageBackgroundTopAppBar(
@@ -153,7 +157,7 @@ fun AlbumHeader(
     )
 
     Box(
-      Modifier.height((88 * (1f - scrollBehavior.state.collapsedFraction)).dp),
+      Modifier.height(actionStripHeight()).alpha(actionStripAlpha()),
       contentAlignment = Alignment.Center
     ) {
       EntityActionStrip(delegate, item, scrollBehavior)

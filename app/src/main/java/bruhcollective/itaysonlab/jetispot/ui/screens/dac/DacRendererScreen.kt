@@ -9,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -86,16 +85,18 @@ fun DacRendererScreen(
       )
       { padding ->
         LazyColumn(
-          modifier = Modifier
-            .fillMaxHeight()
-            .let { if (fullscreen) it.padding(
-              top = padding.calculateTopPadding(),
-              start = padding.calculateStartPadding(LayoutDirection.Ltr),
-              end = padding.calculateEndPadding(LayoutDirection.Ltr),
-              bottom = padding.calculateBottomPadding() - WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-            // TODO: bottom should not have navbar height subtracted when music is not playing
-            ) else it
-            }
+          modifier = Modifier.fillMaxHeight().padding(padding),
+//            .let {
+//              if (fullscreen) it.padding(
+//                top = padding.calculateTopPadding(),
+//                start = padding.calculateStartPadding(LayoutDirection.Ltr),
+//                end = padding.calculateEndPadding(LayoutDirection.Ltr),
+//                bottom = padding.calculateBottomPadding() - WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+//                // TODO: bottom should not have navbar height subtracted when music is not playing
+//              ) else it
+//            },
+          contentPadding = PaddingValues(horizontal = 16.dp),
+          verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
           (viewModel.state as? DacViewModel.State.Loaded)?.apply {
             items(data) { item ->

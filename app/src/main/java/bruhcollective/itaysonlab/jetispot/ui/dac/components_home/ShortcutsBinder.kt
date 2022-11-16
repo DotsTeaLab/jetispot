@@ -3,8 +3,6 @@ package bruhcollective.itaysonlab.jetispot.ui.dac.components_home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,11 +26,7 @@ fun ShortcutsBinder(
   item: ShortcutsSectionComponent
 ) {
   item.shortcutsList.map { it.dynamicUnpack() }.chunked(2).forEachIndexed { idx, pairs ->
-    Row(
-      Modifier
-        .padding(horizontal = 16.dp)
-        .padding(bottom = if (idx != item.shortcutsList.lastIndex / 2) 8.dp else 0.dp)
-    ) {
+    Row(Modifier.padding(bottom = if (idx != item.shortcutsList.lastIndex / 2) 8.dp else 0.dp)) {
       pairs.forEachIndexed { xIdx, xItem ->
         Box(Modifier.weight(1f).padding(end = if (xIdx == 0) 8.dp else 0.dp)) {
           when (xItem) {

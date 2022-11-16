@@ -42,12 +42,7 @@ fun SectionComponentBinder(
   val list = item.componentsList.map { it.dynamicUnpack() }
   val lazyListState = rememberLazyListState()
 
-  Box(
-    Modifier
-      .wrapContentSize()
-      .padding(horizontal = 16.dp)
-      .clip(shape = RoundedCornerShape(34.dp))
-  ) {
+  Box(Modifier.padding(bottom = 4.dp).wrapContentSize().clip(shape = RoundedCornerShape(34.dp))) {
     Card(
       shape = RoundedCornerShape(34.dp)
     ){
