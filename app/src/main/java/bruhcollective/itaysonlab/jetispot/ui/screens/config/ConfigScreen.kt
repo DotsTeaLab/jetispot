@@ -92,7 +92,7 @@ class ConfigScreenViewModel @Inject constructor(
        it.navigate(BottomSheet.ColorSelect.route)
       }))
 
-    add(ConfigItem.Preference(R.string.edit_animation, {ctx, cfg -> ""}, {
+    add(ConfigItem.Preference(R.string.config_edit_animation, {ctx, cfg -> ""}, {
       it.navigate(BottomSheet.SetArtworkData.route)
     }))
 
