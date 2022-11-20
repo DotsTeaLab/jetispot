@@ -150,11 +150,12 @@ fun YLPinnedCard(
             )
           }
           PredefCeType.EPISODES -> {
-            Text(
+            MarqueeText(
               text = stringResource(id = R.string.new_episodes),
               fontSize = 16.sp,
               maxLines = 1,
               overflow = TextOverflow.Ellipsis,
+              basicGradientColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
               style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
             )
           }
@@ -163,6 +164,7 @@ fun YLPinnedCard(
               text = item.name,
               fontSize = 16.sp,
               overflow = TextOverflow.Ellipsis,
+              basicGradientColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
               style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
             )
 
@@ -190,6 +192,7 @@ fun YLPinnedCard(
           fontWeight = FontWeight.Medium,
           style = TextStyle(platformStyle = PlatformTextStyle(false)),
           overflow = TextOverflow.Ellipsis,
+          basicGradientColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
           color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
           modifier = Modifier.padding(top = 2.dp)
         )
@@ -235,6 +238,7 @@ fun YLAlbumCard(
           fontSize = 16.sp,
           maxLines = 1,
           overflow = TextOverflow.Ellipsis,
+          basicGradientColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
           style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
         )
 
@@ -246,6 +250,7 @@ fun YLAlbumCard(
             maxLines = 1,
             style = TextStyle(platformStyle = PlatformTextStyle(false)),
             overflow = TextOverflow.Ellipsis,
+            basicGradientColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
             modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
           )
@@ -292,6 +297,7 @@ fun YLArtistCard(
           fontSize = 16.sp,
           maxLines = 1,
           overflow = TextOverflow.Ellipsis,
+          basicGradientColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
           style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
           textAlign = TextAlign.Center,
           modifier = Modifier.fillMaxWidth()

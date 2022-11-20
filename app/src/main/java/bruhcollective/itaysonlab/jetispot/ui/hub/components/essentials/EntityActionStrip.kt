@@ -87,7 +87,8 @@ fun EntityActionStrip (
         MarqueeText(
           item.text!!.title!!,
           fontSize = 24.sp,
-          overflow = TextOverflow.Ellipsis
+          overflow = TextOverflow.Ellipsis,
+          basicGradientColor = MaterialTheme.colorScheme.background
         )
       }
     }

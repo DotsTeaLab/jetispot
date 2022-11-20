@@ -61,7 +61,8 @@ fun ArtistTrackRow(
           drawnTitle = true
           MarqueeText(
             item.text!!.title!!,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            basicGradientColor = MaterialTheme.colorScheme.background
           )
         }
 
@@ -70,6 +71,7 @@ fun ArtistTrackRow(
             item.text!!.subtitle!!,
             fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onBackground.copy(0.7f),
+            basicGradientColor = MaterialTheme.colorScheme.background,
             modifier = Modifier.padding(top = if (drawnTitle) 4.dp else 8.dp)
           )
         }

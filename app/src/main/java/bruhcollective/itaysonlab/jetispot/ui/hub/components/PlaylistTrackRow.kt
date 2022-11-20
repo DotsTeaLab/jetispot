@@ -8,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bruhcollective.itaysonlab.jetispot.core.objs.hub.HubItem
 import bruhcollective.itaysonlab.jetispot.ui.hub.clickableHub
+import bruhcollective.itaysonlab.jetispot.ui.shared.MarqueeText
 import bruhcollective.itaysonlab.jetispot.ui.shared.PreviewableAsyncImage
 
 @OptIn(ExperimentalTextApi::class)
@@ -55,19 +55,19 @@ fun PlaylistTrackRow(
 
           if (!item.text?.title.isNullOrEmpty()) {
             drawnTitle = true
-            Text(
+            MarqueeText(
               item.text!!.title!!,
               fontSize = 16.sp,
-              maxLines = 1,
+              basicGradientColor = MaterialTheme.colorScheme.background,
               style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
             )
           }
 
           if (!item.text?.subtitle.isNullOrEmpty()) {
-            Text(
+            MarqueeText(
               item.text!!.subtitle!!,
               fontSize = 14.sp,
-              maxLines = 1,
+              basicGradientColor = MaterialTheme.colorScheme.background,
               style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
               modifier = Modifier
                 .padding(top = if (drawnTitle) 4.dp else 8.dp)
