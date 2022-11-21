@@ -76,13 +76,15 @@ fun LikedSongsRow(
         MarqueeText(
           item.text!!.title!!,
           fontSize = 16.sp,
-          style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+          style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
+          basicGradientColor = MaterialTheme.colorScheme.background
         )
         MarqueeText(
           likedSongsInfo.value,
           fontSize = 14.sp,
           fontWeight = FontWeight.Medium,
           style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
+          basicGradientColor = MaterialTheme.colorScheme.background,
           modifier = Modifier.padding(top = 4.dp).alpha(0.7f)
         )
       }

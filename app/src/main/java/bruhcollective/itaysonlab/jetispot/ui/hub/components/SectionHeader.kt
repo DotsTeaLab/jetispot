@@ -22,7 +22,7 @@ fun SectionHeader(
       .padding(
         horizontal = if (LocalHubScreenDelegate.current.isSurroundedWithPadding()) 0.dp else 16.dp
       )
-      .padding(bottom = 8.dp)
+      .padding(top = 16.dp, bottom = 8.dp)
   ) {
     Text(
       text = text.title!!,

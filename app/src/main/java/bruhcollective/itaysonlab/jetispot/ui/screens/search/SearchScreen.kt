@@ -43,7 +43,7 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
   fun clearFunc() {
     viewModel.launch {
       focusManager.clearFocus()
-      virtualPagerState.animateScrollToPage(0)
+      virtualPagerState.scrollToPage(0)
       viewModel.clear()
     }
   }
@@ -51,7 +51,7 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel()) {
   fun enterFunc() {
     viewModel.launch {
       focusManager.clearFocus()
-      virtualPagerState.animateScrollToPage(1)
+      virtualPagerState.scrollToPage(1)
       viewModel.initiateSearch()
     }
   }

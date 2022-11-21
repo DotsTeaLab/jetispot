@@ -36,7 +36,8 @@ fun AlbumTrackRow(item: HubItem) {
           MarqueeText(
             item.text!!.title!!,
             fontSize = 16.sp,
-            style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
+            style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
+            basicGradientColor = MaterialTheme.colorScheme.background
           )
         }
 
@@ -45,9 +46,8 @@ fun AlbumTrackRow(item: HubItem) {
             item.text!!.subtitle!!,
             fontSize = 14.sp,
             style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
-            modifier = Modifier
-              .padding(top = 4.dp)
-              .alpha(0.7f)
+            basicGradientColor = MaterialTheme.colorScheme.background,
+            modifier = Modifier.padding(top = 4.dp).alpha(0.7f)
           )
         }
       }

@@ -125,6 +125,7 @@ fun YLRPinned(
                 text = item.name,
                 fontSize = 16.sp,
                 overflow = TextOverflow.Ellipsis,
+                basicGradientColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
                 style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
               )
 
@@ -253,6 +254,7 @@ fun YLRGenericAlbumItem(
             text = title,
             fontSize = 16.sp,
             overflow = TextOverflow.Ellipsis,
+            basicGradientColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
             style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
           )
           Spacer(modifier = Modifier.width(2.dp))
@@ -269,6 +271,7 @@ fun YLRGenericAlbumItem(
             fontWeight = FontWeight.Medium,
             style = TextStyle(platformStyle = PlatformTextStyle(false)),
             overflow = TextOverflow.Ellipsis,
+            basicGradientColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
             modifier = Modifier.padding(top = 4.dp)
           )
@@ -312,6 +315,7 @@ fun YLRGenericArtistItem(
         MarqueeText(
           text = title,
           fontSize = 16.sp,
+          basicGradientColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
           style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
         )
 
