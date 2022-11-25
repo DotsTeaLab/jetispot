@@ -157,3 +157,129 @@ fun EntityActionStrip (
     }
   }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PlaylistEntityActionStrip (
+  delegate: HubScreenDelegate,
+  item: HubItem,
+  scrollBehavior: TopAppBarScrollBehavior
+) {
+  // calculate text width for the animation
+  var textWidth by remember { mutableStateOf(60000) }
+
+  val isTooLong = Paragraph(
+    text = item.text!!.title!!,
+    style = TextStyle(fontSize = 24.sp),
+    constraints = Constraints(maxWidth = textWidth),
+    maxLines = 1,
+    density = LocalDensity.current,
+    fontFamilyResolver = LocalFontFamilyResolver.current,
+  ).didExceedMaxLines
+
+  val scrolled = if (isTooLong) scrollBehavior.state.collapsedFraction >= 0.12f else false
+
+  Row(
+    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+    horizontalArrangement = Arrangement.SpaceBetween,
+    verticalAlignment = Alignment.CenterVertically
+  ) {
+    Box(
+      Modifier
+        .weight(1f)
+        .align(Alignment.CenterVertically)
+        .onGloballyPositioned { coordinates -> textWidth = coordinates.size.width },
+      contentAlignment = Alignment.CenterStart
+    ) {
+      androidx.compose.animation.AnimatedVisibility(
+        visible = !scrolled,
+        enter = fadeIn(tween(10)) + slideInVertically(initialOffsetY = { 30 }),
+        exit = fadeOut(tween(300))
+      ) {
+        Text(
+          item.text!!.title!!,
+          fontSize = 24.sp,
+          maxLines = if (scrolled) 1 else 3,
+          overflow = TextOverflow.Ellipsis,
+          modifier = Modifier.animateContentSize()
+        )
+      }
+
+      androidx.compose.animation.AnimatedVisibility(
+        visible = scrolled,
+        enter = fadeIn(tween(200)),
+        exit = fadeOut(tween(100)) + slideOutVertically(targetOffsetY = { 30 })
+      ) {
+        MarqueeText(
+          item.text!!.title!!,
+          fontSize = 24.sp,
+          overflow = TextOverflow.Ellipsis,
+          basicGradientColor = MaterialTheme.colorScheme.background
+        )
+      }
+    }
+
+    Spacer(Modifier.width(16.dp))
+
+    Row(Modifier.height(56.dp)) {
+      IconButton(onClick = { delegate.toggleMainObjectAddedState() },
+        Modifier
+          .clip(shape = CircleShape)
+          .align(Alignment.CenterVertically)
+          .background(MaterialTheme.colorScheme.surfaceVariant)
+          .size(56.dp)
+      ) {
+        Icon(
+          if (delegate.getMainObjectAddedState().value)
+            Icons.Rounded.Favorite
+          else
+            Icons.Rounded.FavoriteBorder,
+          null,
+          tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+      }
+
+      Spacer(modifier = Modifier.padding(horizontal = 2.dp))
+
+      Box() {
+        Box(
+          Modifier
+            .clip(RoundedCornerShape(32.dp))
+            .height(56.dp)
+            .width(142.dp)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .clickableHub(item.children!![0])
+        ) {
+          Icon(
+            imageVector = Icons.Outlined.PlayArrow,
+            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+            contentDescription = null,
+            modifier = Modifier
+              .size(28.dp)
+              .align(Alignment.Center)
+          )
+        }
+
+        if ((item.children[0].events?.click as? HubEvent.PlayFromContext)?.data?.player?.options?.player_options_override?.shuffling_context != false) {
+          Box(
+            Modifier
+              .align(Alignment.BottomEnd)
+              .offset(4.dp, 4.dp)
+              .clip(CircleShape)
+              .size(22.dp)
+              .background(MaterialTheme.colorScheme.compositeSurfaceElevation(4.dp))
+          ) {
+            Icon(
+              imageVector = Icons.Rounded.Shuffle,
+              tint = MaterialTheme.colorScheme.primary,
+              contentDescription = null,
+              modifier = Modifier
+                .padding(4.dp)
+                .align(Alignment.Center)
+            )
+          }
+        }
+      }
+    }
+  }
+}
