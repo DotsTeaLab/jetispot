@@ -127,46 +127,29 @@ fun PlaylistHeader(item: HubItem, scrollBehaviour: TopAppBarScrollBehavior) {
 //  }
 
   ImageTopAppBar(
-    title = {
-      MarqueeText(
-        text = item.text?.title!!,
-        overflow = TextOverflow.Ellipsis,
-      )
-    },
+    title = { MarqueeText(item.text?.title!!, overflow = TextOverflow.Ellipsis,) },
     image = {
-      Column() {
-        Box(contentAlignment = Alignment.Center) {
-          Box() {
-            Column() {
-              Box(
-                Modifier
-                  .clip(RoundedCornerShape(24.dp))
-                  .blur(imageBlur)
-              ) {
-                PreviewableAsyncImage(
-                  item.images?.main?.uri,
-                  "playlist",
-                  modifier = Modifier
-                    .size(imageSize)
-                    .alpha(imageAlpha)
-                    .padding(max(imagePadding, 0.dp))
-                    .clip(RoundedCornerShape(24.dp)),
-                  when (imageHeight > screenWidth) {
-                    true -> ContentScale.FillBounds
-                    false -> ContentScale.Crop
-                  }
-                )
+      Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box() {
+          Box(Modifier.clip(RoundedCornerShape(24.dp)).blur(imageBlur)) {
+            PreviewableAsyncImage(
+              item.images?.main?.uri,
+              "playlist",
+              modifier = Modifier
+                .size(imageSize)
+                .alpha(imageAlpha)
+                .padding(max(imagePadding, 0.dp))
+                .clip(RoundedCornerShape(24.dp)),
+              when (imageHeight > screenWidth) {
+                true -> ContentScale.FillBounds
+                false -> ContentScale.Crop
               }
-
-              Box(Modifier.height(animatedActionStripHeight).alpha(inverseCollapsedFraction)) {
-                PlaylistEntityActionStrip(delegate, item, scrollBehaviour)
-              }
-            }
+            )
           }
 
           if (screenWidth < 476.dp) IconButton(
             onClick = { navController.popBackStack() },
-            colors = IconButtonDefaults.outlinedIconButtonColors(containerColor = buttonBackground),
+            colors = IconButtonDefaults.outlinedIconButtonColors(buttonBackground),
             modifier = Modifier
               .align(Alignment.TopStart)
               .padding(buttonPadding)
@@ -176,7 +159,7 @@ fun PlaylistHeader(item: HubItem, scrollBehaviour: TopAppBarScrollBehavior) {
 
           if (screenWidth < 476.dp) IconButton(
             onClick = { /*TODO*/ },
-            colors = IconButtonDefaults.outlinedIconButtonColors(containerColor = buttonBackground),
+            colors = IconButtonDefaults.outlinedIconButtonColors(buttonBackground),
             modifier = Modifier
               .align(Alignment.TopEnd)
               .padding(buttonPadding)
@@ -186,6 +169,14 @@ fun PlaylistHeader(item: HubItem, scrollBehaviour: TopAppBarScrollBehavior) {
               contentDescription = "Options for ${item.text!!.title!!} by ${item.text!!.subtitle!!}"
             )
           }
+        }
+
+        Box(
+          Modifier
+            .height(animatedActionStripHeight)
+            .alpha(inverseCollapsedFraction)
+        ) {
+          PlaylistEntityActionStrip(delegate, item, scrollBehaviour)
         }
       }
     },
