@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.*
@@ -34,6 +35,7 @@ fun FilterComponentBinder (
         selected = selected,
         onClick = { selectFacet(if (selected) "default" else item.value) },
         label = { Text(item.title) },
+        shape = CircleShape,
         leadingIcon = { if (selected) Icon(Icons.Rounded.Check, null) } )
     }
   }
