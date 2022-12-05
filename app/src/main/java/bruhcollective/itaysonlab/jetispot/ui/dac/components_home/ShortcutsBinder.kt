@@ -1,5 +1,6 @@
 package bruhcollective.itaysonlab.jetispot.ui.dac.components_home
 
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,12 +9,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bruhcollective.itaysonlab.jetispot.ui.ext.compositeSurfaceElevation
+import bruhcollective.itaysonlab.jetispot.ui.ext.blendWith
 import bruhcollective.itaysonlab.jetispot.ui.ext.dynamicUnpack
 import bruhcollective.itaysonlab.jetispot.ui.shared.PreviewableAsyncImage
 import bruhcollective.itaysonlab.jetispot.ui.shared.navClickable
@@ -79,32 +82,42 @@ private fun ShortcutComponentBinder(
   imagePlaceholder: String,
   title: String
 ) {
-  Box(modifier = Modifier
-    .height(56.dp)
-    .fillMaxWidth()
-    .clip(RoundedCornerShape(8.dp))
-    .background(monet.compositeSurfaceElevation(4.dp))
-    .navClickable { navController -> navController.navigate(navigateUri) }
+  Box(
+    modifier = Modifier
+      .height(72.dp)
+      .fillMaxWidth()
+      .clip(RoundedCornerShape(16.dp))
+      .background(monet.inverseOnSurface.blendWith(monet.primaryContainer, 0.1f))
+      .navClickable { navController -> navController.navigate(navigateUri) }
   ) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PreviewableAsyncImage(
+      imageUrl = imageUrl,
+      placeholderType = imagePlaceholder,
+      modifier = Modifier
+        .fillMaxSize()
+        .blur(512.dp)
+        .alpha(0.1f)
+    )
+
     Row(
       Modifier
         .fillMaxSize()
-        .padding(horizontal = 8.dp)
+        .padding(12.dp)
     ) {
       PreviewableAsyncImage(
         imageUrl = imageUrl,
         placeholderType = imagePlaceholder,
-        modifier = Modifier.size(42.dp).clip(RoundedCornerShape(3.dp)).align(CenterVertically)
+        modifier = Modifier.fillMaxHeight().aspectRatio(1f).clip(RoundedCornerShape(4.dp))
       )
 
       Text(
         title,
-        fontSize = 12.sp,
-        fontWeight = FontWeight.Bold,
+        fontSize = 13.sp,
+        fontWeight = FontWeight.Medium,
         lineHeight = 18.sp,
         maxLines = 2,
         overflow = TextOverflow.Ellipsis,
-        modifier = Modifier.padding(start = 8.dp).align(CenterVertically)
+        modifier = Modifier.padding(start = 12.dp).align(CenterVertically).alpha(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) 0.9f else 1f)
       )
     }
   }
