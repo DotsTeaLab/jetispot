@@ -1,5 +1,6 @@
 package bruhcollective.itaysonlab.jetispot.ui.dac.components_home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -8,11 +9,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bruhcollective.itaysonlab.jetispot.ui.navigation.LocalNavigationController
-import bruhcollective.itaysonlab.jetispot.ui.shared.MediumText
 import bruhcollective.itaysonlab.jetispot.ui.shared.PreviewableAsyncImage
 import bruhcollective.itaysonlab.jetispot.ui.shared.navClickable
 import com.spotify.home.dac.component.heading.v1.proto.RecsplanationHeadingSingleTextComponent
@@ -24,35 +26,34 @@ import kotlin.math.abs
 fun RecsplanationHeadingComponentBinder(item: RecsplanationHeadingComponent) {
   val navController = LocalNavigationController.current
 
-  Card(
-    shape = RoundedCornerShape(32.dp),
-    modifier = Modifier.padding(top = 8.dp),
-    colors = CardDefaults.cardColors(
-      containerColor = MaterialTheme.colorScheme.secondaryContainer
-    )
-  ) {
-    Row(
+  Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Box(
       Modifier
-        .clickable { navController.navigate(item.navigateUri) }
-        .padding(horizontal = 8.dp, vertical = 8.dp)
+        .width(256.dp)
+        .height(64.dp)
+        .clip(RoundedCornerShape(28.dp))
+        .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+        .clickable { navController.navigate(item.navigateUri) },
+      contentAlignment = Alignment.Center
     ) {
       PreviewableAsyncImage(
         imageUrl = item.imageUri,
         placeholderType = "none",
         modifier = Modifier
-          .size(48.dp)
-          .clip(CircleShape)
+          .fillMaxSize()
+          .alpha(0.1f)
       )
-
       Column(
         Modifier
-          .padding(horizontal = 12.dp)
-          .align(Alignment.CenterVertically)) {
-        Text(item.subtitle.uppercase(), fontSize = 12.sp)
-        MediumText(item.title, modifier = Modifier.padding(top = 0.dp), fontSize = 18.sp)
+          .padding(horizontal = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+      ) {
+        Text(item.subtitle, textAlign = TextAlign.Center, style = MaterialTheme.typography.bodyMedium)
+        Text(item.title, textAlign = TextAlign.Center, style = MaterialTheme.typography.titleLarge)
       }
     }
   }
+
 }
 
 @Composable
